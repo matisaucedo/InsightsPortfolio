@@ -426,8 +426,11 @@ export function ProyectosScreen() {
       <div className="container-minta" style={{ paddingTop: 48, position: "relative", zIndex: 2 }}>
         {/* Filter dropdown */}
         <div ref={dropRef} style={{ position: "relative", display: "inline-block", marginBottom: 40 }}>
-          <button
+          <motion.button
             onClick={() => setFilterOpen(o => !o)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
             style={{
               display: "flex",
               alignItems: "center",
@@ -444,7 +447,7 @@ export function ProyectosScreen() {
             }}
           >
             {activeLabel}
-            <svg
+            <motion.svg
               width="12"
               height="12"
               viewBox="0 0 24 24"
@@ -452,53 +455,68 @@ export function ProyectosScreen() {
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
-              style={{ transform: filterOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+              animate={{ rotate: filterOpen ? 180 : 0 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
             >
               <path d="M6 9l6 6 6-6"/>
-            </svg>
-          </button>
+            </motion.svg>
+          </motion.button>
 
-          {filterOpen && (
-            <div
-              style={{
-                position: "absolute",
-                top: "calc(100% + 6px)",
-                left: 0,
-                minWidth: 180,
-                background: "#111",
-                border: "1px solid rgba(255,255,255,0.10)",
-                borderRadius: 12,
-                padding: 6,
-                zIndex: 50,
-                boxShadow: "0 12px 40px rgba(0,0,0,0.6)",
-              }}
-            >
-              {NICHES.map(n => (
-                <button
-                  key={n.key}
-                  onClick={() => { setActiveFilter(n.key); setFilterOpen(false); }}
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    textAlign: "left",
-                    padding: "8px 12px",
-                    borderRadius: 8,
-                    background: activeFilter === n.key ? "rgba(255,255,255,0.08)" : "transparent",
-                    border: "none",
-                    color: activeFilter === n.key ? "#fff" : "rgba(255,255,255,0.55)",
-                    fontSize: 13,
-                    cursor: "pointer",
-                    fontFamily: "Inter, system-ui, sans-serif",
-                    transition: "background 0.15s, color 0.15s",
-                  }}
-                  onMouseEnter={e => { if (activeFilter !== n.key) e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
-                  onMouseLeave={e => { if (activeFilter !== n.key) e.currentTarget.style.background = "transparent"; }}
-                >
-                  {n.label}
-                </button>
-              ))}
-            </div>
-          )}
+          <AnimatePresence>
+            {filterOpen && (
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, y: -6, scale: 0.97, transition: { duration: 0.14, ease: [0.22, 1, 0.36, 1] } },
+                  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1], staggerChildren: 0.04, delayChildren: 0.03 } },
+                }}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 6px)",
+                  left: 0,
+                  minWidth: 180,
+                  background: "#111",
+                  border: "1px solid rgba(255,255,255,0.10)",
+                  borderRadius: 12,
+                  padding: 6,
+                  zIndex: 50,
+                  boxShadow: "0 12px 40px rgba(0,0,0,0.6)",
+                  transformOrigin: "top left",
+                }}
+              >
+                {NICHES.map(n => (
+                  <motion.button
+                    key={n.key}
+                    variants={{
+                      hidden: { opacity: 0, x: -6 },
+                      visible: { opacity: 1, x: 0, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } },
+                    }}
+                    onClick={() => { setActiveFilter(n.key); setFilterOpen(false); }}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "8px 12px",
+                      borderRadius: 8,
+                      background: activeFilter === n.key ? "rgba(255,255,255,0.08)" : "transparent",
+                      border: "none",
+                      color: activeFilter === n.key ? "#fff" : "rgba(255,255,255,0.55)",
+                      fontSize: 13,
+                      cursor: "pointer",
+                      fontFamily: "Inter, system-ui, sans-serif",
+                      transition: "background 0.15s, color 0.15s",
+                    }}
+                    onMouseEnter={e => { if (activeFilter !== n.key) e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
+                    onMouseLeave={e => { if (activeFilter !== n.key) e.currentTarget.style.background = "transparent"; }}
+                  >
+                    {n.label}
+                  </motion.button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Divider */}
@@ -534,6 +552,7 @@ function ProjectRow({ project, index }) {
       layout
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
+      whileHover={!locked ? { y: -3 } : {}}
       transition={{ duration: 0.45, ease: "easeOut", delay: index * 0.05 }}
       onMouseEnter={() => !locked && setHovered(true)}
       onMouseLeave={() => !locked && setHovered(false)}
@@ -547,7 +566,7 @@ function ProjectRow({ project, index }) {
         cursor: "default",
         transition: "background 0.2s",
         borderRadius: 4,
-        background: hovered ? "rgba(255,255,255,0.018)" : "transparent",
+        background: hovered ? "rgba(255,255,255,0.025)" : "transparent",
       }}
     >
       <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
@@ -564,16 +583,19 @@ function ProjectRow({ project, index }) {
             position: "relative",
           }}
         >
-          <img
+          <motion.img
             src={project.img}
             alt={project.title}
             loading="lazy"
+            animate={{ scale: hovered && !locked ? 1.06 : 1 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             style={{
               width: "100%",
               height: "100%",
               objectFit: "cover",
               display: "block",
               filter: locked ? "grayscale(1) brightness(0.4)" : "none",
+              transformOrigin: "center",
             }}
             onError={e => { e.target.style.display = "none"; }}
           />
@@ -689,9 +711,15 @@ function ProjectRow({ project, index }) {
             }}
           >
             Ver proyecto
-            <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
+            <motion.span
+              animate={{ x: hovered ? 4 : 0 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              style={{ display: "inline-flex" }}
+            >
+              <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </motion.span>
           </Link>
         )}
       </div>

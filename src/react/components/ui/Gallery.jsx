@@ -36,16 +36,22 @@ export default function Gallery({ images = [] }) {
             }}
           >
             {/* Image */}
-            <img
+            <motion.img
               src={image.src}
               alt={image.title || image.caption}
               loading="lazy"
+              animate={{
+                scale: isActive ? 1.04 : 1,
+                filter: isActive ? "brightness(1)" : "brightness(0.5)",
+              }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               style={{
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
                 borderRadius: "12px",
                 display: "block",
+                transformOrigin: "center",
               }}
               onError={(e) => {
                 e.target.style.background = "#1a1a1a";

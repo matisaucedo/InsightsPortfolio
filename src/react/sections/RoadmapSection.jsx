@@ -62,8 +62,8 @@ export default function RoadmapSection() {
                 { strokeDashoffset: "0" },
               ],
               {
-                duration: 1400,
-                easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                duration: 1200,
+                easing: "cubic-bezier(0.16, 1, 0.3, 1)",
                 fill: "forwards",
               }
             );
