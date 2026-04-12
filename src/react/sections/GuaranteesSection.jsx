@@ -62,7 +62,7 @@ export default function GuaranteesSection() {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 0.47 }}
         viewport={{ once: true }}
-        transition={{ duration: 1, ease: "easeOut" }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
       >
         <motion.img
           src="/ref/security-bg.jpg"
@@ -77,7 +77,7 @@ export default function GuaranteesSection() {
           initial={{ y: -64, scale: 1.1 }}
           whileInView={{ y: 0, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.4, ease: "easeOut" }}
+          transition={{ duration: 0.75, ease: "easeOut" }}
         />
       </motion.div>
 
@@ -135,7 +135,7 @@ export default function GuaranteesSection() {
             initial={{ opacity: 0, y: 48 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
+            transition={{ duration: 0.75, ease: "easeOut", delay: 0.2 }}
           >
             <svg width="256" height="256" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>

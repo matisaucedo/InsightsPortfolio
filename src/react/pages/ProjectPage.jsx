@@ -213,7 +213,7 @@ function ProjectHero({ project, centered }) {
         />
         <span
           style={{
-            fontSize: 15,
+            fontSize: 16,
             fontWeight: 500,
             color: "rgba(255,255,255,0.62)",
             letterSpacing: "-0.01em",
@@ -267,7 +267,7 @@ function MockupSwitcher({ value, onChange, options }) {
       style={{
         position: "relative",
         display: "inline-flex",
-        padding: 5,
+        padding: 4,
         borderRadius: 999,
         background:
           "linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.025) 50%, rgba(255,255,255,0.05) 100%)",
@@ -309,7 +309,7 @@ function MockupSwitcher({ value, onChange, options }) {
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              padding: "11px 26px",
+              padding: "10px 24px",
               minWidth: 136,
               fontSize: 13,
               fontWeight: 500,

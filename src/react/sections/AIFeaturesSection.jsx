@@ -165,7 +165,7 @@ export default function AIFeaturesSection() {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Outer diffused glow — very soft */}
             <div
@@ -358,12 +358,12 @@ export default function AIFeaturesSection() {
                   <div style={{ paddingTop: 2 }}>
                     <div
                       style={{
-                        fontSize: 14.5,
+                        fontSize: 15,
                         fontWeight: 500,
                         color: "#fff",
                         letterSpacing: "-0.02em",
                         lineHeight: "1.25em",
-                        marginBottom: 7,
+                        marginBottom: 8,
                       }}
                     >
                       {f.title}
