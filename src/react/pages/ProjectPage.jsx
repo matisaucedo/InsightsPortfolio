@@ -222,19 +222,22 @@ function MockupLayout({ project, navigate }) {
         {/* Tags */}
         <Tags tags={project.tags} delay={0.22} center />
 
-        {/* Divider */}
-        <motion.div
-          custom={0.26}
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          style={{
-            width: "100%",
-            height: 1,
-            background: "rgba(255,255,255,0.07)",
-            margin: "40px 0",
-          }}
-        />
+        {/* Divider — hidden in split layout; each panel has its own section divider */}
+        {project.mockup.device !== "split" && (
+          <motion.div
+            custom={0.26}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            style={{
+              width: "100%",
+              height: 1,
+              background: "rgba(255,255,255,0.07)",
+              margin: "40px 0",
+            }}
+          />
+        )}
+        {project.mockup.device === "split" && <div style={{ height: 40 }} />}
 
         {/* Device Mockup */}
         <motion.div
