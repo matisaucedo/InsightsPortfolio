@@ -1,19 +1,21 @@
 import { useRef, useState, useEffect } from "react";
 
 const FRAME_SRC = "/assets/mockup/marcos.png";
-const MASK_SRC = "/assets/mockup/placehold.png";
 const ASPECT = 1288 / 2614; // width / height — matches frame image
 
 // iPhone 16 logical viewport — the app is built for this device
-const NATIVE_WIDTH = 390;
+const NATIVE_WIDTH  = 390;
 const NATIVE_HEIGHT = 844;
 
-// Screen area within the mask image, derived from pixel analysis of placehold.png (1288×2614).
-// These are the bezels — the opaque (visible) area starts at these offsets.
+// Screen area insets relative to the full frame image (1288×2614px).
+// Derived from pixel analysis of the frame image bezels.
 const SCREEN_LEFT   = 0.0559;
 const SCREEN_TOP    = 0.0298;
 const SCREEN_RIGHT  = 0.0668;
+const SCREEN_BOTTOM = 0.022;
 
+// iPhone 16 screen corner radius as fraction of screen width (~44pt / 390pt)
+const SCREEN_RADIUS_RATIO = 0.113;
 
 export default function DeviceMockup({
   src,
@@ -22,7 +24,6 @@ export default function DeviceMockup({
   className = "",
 }) {
   const wrapperRef = useRef(null);
-  const [loaded, setLoaded] = useState(true);
   const [containerWidth, setContainerWidth] = useState(0);
 
   useEffect(() => {
@@ -35,12 +36,16 @@ export default function DeviceMockup({
     return () => ro.disconnect();
   }, []);
 
-  // Screen pixel dimensions at current render size
   const containerHeight = containerWidth > 0 ? containerWidth / ASPECT : 0;
-  const screenLeft   = containerWidth * SCREEN_LEFT;
+
+  // Screen area pixel dimensions at current render size
+  const screenLeft   = containerWidth  * SCREEN_LEFT;
   const screenTop    = containerHeight * SCREEN_TOP;
-  const screenWidth  = containerWidth * (1 - SCREEN_LEFT - SCREEN_RIGHT);
-  // Scale the 390px app to fit exactly within the visible screen area
+  const screenWidth  = containerWidth  * (1 - SCREEN_LEFT - SCREEN_RIGHT);
+  const screenHeight = containerHeight * (1 - SCREEN_TOP  - SCREEN_BOTTOM);
+  const screenRadius = screenWidth * SCREEN_RADIUS_RATIO;
+
+  // Scale the 390px app to fit exactly within the visible screen width
   const scale = screenWidth > 0 ? screenWidth / NATIVE_WIDTH : 1;
 
   return (
@@ -56,61 +61,50 @@ export default function DeviceMockup({
         margin: "0 auto",
       }}
     >
-      {/* Mask layer — clips content to phone screen shape */}
+      {/* Screen viewport — clipped to the phone screen area */}
       <div
         data-lenis-prevent
         style={{
           position: "absolute",
-          inset: 0,
-          maskImage: `url(${MASK_SRC})`,
-          WebkitMaskImage: `url(${MASK_SRC})`,
-          maskSize: "100% 100%",
-          WebkitMaskSize: "100% 100%",
-          maskRepeat: "no-repeat",
-          WebkitMaskRepeat: "no-repeat",
+          left: screenLeft,
+          top: screenTop,
+          width: screenWidth,
+          height: screenHeight,
+          borderRadius: screenRadius,
+          overflow: "hidden",
           zIndex: 1,
-          overscrollBehavior: "contain",
+          background: "#000",
         }}
       >
         {src ? (
+          /* Render at iPhone 16 native size (390×844), then scale to fit screen area */
           <div
             style={{
-              position: "absolute",
-              inset: 0,
-              opacity: loaded ? 1 : 0,
-              transition: "opacity 0.4s ease",
+              width: NATIVE_WIDTH,
+              height: NATIVE_HEIGHT,
+              transform: `scale(${scale})`,
+              transformOrigin: "0 0",
+              flexShrink: 0,
             }}
           >
-            {/* Render at iPhone 16 native size (390×844), then translate+scale to sit
-                exactly inside the mask's visible screen area. */}
-            <div
+            <iframe
+              src={src}
+              title="App preview"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
               style={{
                 width: NATIVE_WIDTH,
                 height: NATIVE_HEIGHT,
-                transform: `translate(${screenLeft}px, ${screenTop}px) scale(${scale})`,
-                transformOrigin: "0 0",
+                border: "none",
+                display: "block",
               }}
-            >
-              <iframe
-                src={src}
-                title="App preview"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
-                style={{
-                  width: NATIVE_WIDTH,
-                  height: NATIVE_HEIGHT,
-                  border: "none",
-                  display: "block",
-                }}
-                onLoad={() => setLoaded(true)}
-              />
-            </div>
+            />
           </div>
         ) : (
           children
         )}
       </div>
 
-      {/* Device frame sits on top of the content */}
+      {/* Device frame sits on top of the screen content */}
       <img
         src={FRAME_SRC}
         alt=""
