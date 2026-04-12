@@ -113,6 +113,13 @@ export const PROJECTS = [
     desc: "Sistema de gestión para gimnasio con diseño brutalist dark. Membresías, rutinas, asistencia y pagos.",
     tags: ["Gym Management", "Dark UI", "Membresías"],
     img: "/assets/images/forza_app.jpg",
+    mockup: {
+      device: "split",
+      macSrc: "https://forza-gym.onrender.com/",
+      iphoneSrc: "https://forza-gym.onrender.com/app",
+      macLabel: "Landing",
+      iphoneLabel: "App",
+    },
     gallery: [
       { src: "/assets/images/forza_app.jpg", title: "Panel Principal", caption: "Control central del gimnasio" },
       { src: "/assets/images/forza_app.jpg", title: "Membresías", caption: "Gestión de planes y suscripciones" },
