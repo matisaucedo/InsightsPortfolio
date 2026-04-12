@@ -39,7 +39,7 @@ export const PROJECTS = [
     sub: "Dashboard VSL Funnel",
     desc: "Dashboard de analytics para agencias digitales. Meta Ads → Landing → Sales → Revenue. Métricas de CAC, ROAS, cash collected y llamadas en tiempo real.",
     tags: ["Meta Ads", "GoHighLevel", "Analytics"],
-    img: "/assets/images/ss_clarity.jpg",
+    img: "/assets/images/clarity_cover.jpg",
     mockup: {
       device: "split",
       macSrc: "https://clarity-business.onrender.com/?demo=true",
@@ -55,6 +55,7 @@ export const PROJECTS = [
   },
   {
     id: "truck",
+    locked: true,
     niche: "tech",
     nl: "Fleet · SaaS",
     title: "TruckTrack",
@@ -72,6 +73,7 @@ export const PROJECTS = [
   },
   {
     id: "corpex",
+    locked: true,
     niche: "fin",
     nl: "Fintech · Pagos",
     title: "CorpexPay",
@@ -89,6 +91,7 @@ export const PROJECTS = [
   },
   {
     id: "nike",
+    locked: true,
     niche: "ecom",
     nl: "E-commerce · Sports",
     title: "Nike Argentina",
@@ -112,7 +115,7 @@ export const PROJECTS = [
     sub: "Dark App + Landing",
     desc: "Sistema de gestión para gimnasio con diseño brutalist dark. Membresías, rutinas, asistencia y pagos.",
     tags: ["Gym Management", "Dark UI", "Membresías"],
-    img: "/assets/images/forza_app.jpg",
+    img: "/assets/images/forza_cover.jpg",
     mockup: {
       device: "split",
       macSrc: "https://forza-gym.onrender.com/",
@@ -130,6 +133,7 @@ export const PROJECTS = [
   },
   {
     id: "donor",
+    locked: true,
     niche: "edu",
     nl: "ONG · 3D Web",
     title: "DonorTrack × UNICEF",
@@ -147,6 +151,7 @@ export const PROJECTS = [
   },
   {
     id: "table",
+    locked: true,
     niche: "rest",
     nl: "Restaurante · App",
     title: "TableFlow",
@@ -164,6 +169,7 @@ export const PROJECTS = [
   },
   {
     id: "salud",
+    locked: true,
     niche: "health",
     nl: "Salud · App",
     title: "Salud Ocular",
@@ -181,6 +187,7 @@ export const PROJECTS = [
   },
   {
     id: "build",
+    locked: true,
     niche: "const",
     nl: "Construcción · SaaS",
     title: "BuildCore",

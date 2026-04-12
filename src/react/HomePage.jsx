@@ -316,7 +316,9 @@ export function ProyectosScreen() {
   const [filterOpen, setFilterOpen] = useState(false);
   const dropRef = useRef(null);
 
-  const filtered = activeFilter === "all" ? PROJECTS : PROJECTS.filter(p => p.niche === activeFilter);
+  const filtered = (activeFilter === "all" ? PROJECTS : PROJECTS.filter(p => p.niche === activeFilter))
+    .slice()
+    .sort((a, b) => (a.locked ? 1 : 0) - (b.locked ? 1 : 0));
   const activeLabel = NICHES.find(n => n.key === activeFilter)?.label || "Todos";
 
   useEffect(() => {
@@ -519,6 +521,7 @@ export function ProyectosScreen() {
 function ProjectRow({ project, index }) {
   const [hovered, setHovered] = useState(false);
   const navigate = useNavigate();
+  const locked = !!project.locked;
 
   return (
     <motion.div
@@ -526,8 +529,8 @@ function ProjectRow({ project, index }) {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut", delay: index * 0.05 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => !locked && setHovered(true)}
+      onMouseLeave={() => !locked && setHovered(false)}
       style={{
         display: "grid",
         gridTemplateColumns: "1fr auto",
@@ -552,19 +555,40 @@ function ProjectRow({ project, index }) {
             flexShrink: 0,
             background: "#111",
             border: "1px solid rgba(255,255,255,0.07)",
+            position: "relative",
           }}
         >
           <img
             src={project.img}
             alt={project.title}
             loading="lazy"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+              filter: locked ? "grayscale(1) brightness(0.4)" : "none",
+            }}
             onError={e => { e.target.style.display = "none"; }}
           />
+          {locked && (
+            <div style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+          )}
         </div>
 
         {/* Text */}
-        <div>
+        <div style={{ opacity: locked ? 0.35 : 1 }}>
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.30)", letterSpacing: "0.10em", textTransform: "uppercase", fontWeight: 500, marginBottom: 4 }}>
             {project.nl}
           </div>
@@ -591,7 +615,7 @@ function ProjectRow({ project, index }) {
 
       {/* Right: tags + CTA */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 12 }}>
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end", opacity: locked ? 0.3 : 1 }}>
           {project.tags.map(t => (
             <span
               key={t}
@@ -609,38 +633,60 @@ function ProjectRow({ project, index }) {
           ))}
         </div>
 
-        {/* Ver proyecto button */}
-        <button
-          onClick={() => navigate(`/proyectos/${project.id}`)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "7px 14px",
-            borderRadius: 8,
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "transparent",
-            color: "rgba(255,255,255,0.50)",
-            fontSize: 12,
-            cursor: "pointer",
-            fontFamily: "Inter, system-ui, sans-serif",
-            transition: "color 0.2s, border-color 0.2s",
-            whiteSpace: "nowrap",
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.color = "#fa8039";
-            e.currentTarget.style.borderColor = "rgba(250,128,57,0.45)";
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.color = "rgba(255,255,255,0.50)";
-            e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
-          }}
-        >
-          Ver proyecto
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </button>
+        {locked ? (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "7px 14px",
+              borderRadius: 8,
+              border: "1px solid rgba(255,255,255,0.07)",
+              color: "rgba(255,255,255,0.20)",
+              fontSize: 12,
+              whiteSpace: "nowrap",
+              fontFamily: "Inter, system-ui, sans-serif",
+            }}
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Próximamente
+          </span>
+        ) : (
+          <button
+            onClick={() => navigate(`/proyectos/${project.id}`)}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "7px 14px",
+              borderRadius: 8,
+              border: "1px solid rgba(255,255,255,0.12)",
+              background: "transparent",
+              color: "rgba(255,255,255,0.50)",
+              fontSize: 12,
+              cursor: "pointer",
+              fontFamily: "Inter, system-ui, sans-serif",
+              transition: "color 0.2s, border-color 0.2s",
+              whiteSpace: "nowrap",
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.color = "#fa8039";
+              e.currentTarget.style.borderColor = "rgba(250,128,57,0.45)";
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.color = "rgba(255,255,255,0.50)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
+            }}
+          >
+            Ver proyecto
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        )}
       </div>
     </motion.div>
   );
