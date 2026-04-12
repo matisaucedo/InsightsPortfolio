@@ -128,6 +128,13 @@ npm start            # Express server at :3000
 npm run preview      # Build + serve at :3000
 ```
 
+## Deploy (Render)
+- Repo: https://github.com/matisaucedo/InsightsPortfolio
+- Service type: **Web Service**
+- Build Command: `npm install && npm run build`  ← importante: instala devDeps (vite)
+- Start Command: `npm start`
+- Branch: `main` (auto-deploy on push)
+
 ---
 
 ## Scripts
