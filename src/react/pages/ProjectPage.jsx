@@ -133,22 +133,26 @@ function CtaButton() {
   );
 }
 
-function GalleryDivider({ delay = 0.3 }) {
+function SectionDivider({ label, delay = 0.3, style }) {
   return (
     <motion.div
       custom={delay}
       variants={fadeUp}
       initial="hidden"
       animate="visible"
-      style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}
+      style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24, width: "100%", ...style }}
     >
       <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.07)" }} />
       <span style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 500, fontFamily: "Inter, system-ui, sans-serif" }}>
-        Galería
+        {label}
       </span>
       <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.07)" }} />
     </motion.div>
   );
+}
+
+function GalleryDivider({ delay = 0.3 }) {
+  return <SectionDivider label="Galería" delay={delay} />;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -245,14 +249,20 @@ function MockupLayout({ project, navigate }) {
               className="mockup-split"
               style={{
                 display: "grid",
-                gridTemplateColumns: "1.5fr 1fr",
-                gap: 32,
-                alignItems: "center",
+                gridTemplateColumns: "1.55fr 1fr",
+                gap: 40,
+                alignItems: "end",
                 width: "100%",
               }}
             >
-              <MacMockup src={project.mockup.macSrc} maxHeight={520} />
-              <DeviceMockup src={project.mockup.iphoneSrc} maxHeight={520} />
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                <SectionDivider label="Pagina Web" delay={0.26} />
+                <MacMockup src={project.mockup.macSrc} maxHeight={600} />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                <SectionDivider label="App" delay={0.28} />
+                <DeviceMockup src={project.mockup.iphoneSrc} maxHeight={500} />
+              </div>
             </div>
           ) : (
             <DeviceMockup src={project.mockup.src} maxHeight={380} />
