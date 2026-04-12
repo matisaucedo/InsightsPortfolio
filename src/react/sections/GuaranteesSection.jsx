@@ -146,11 +146,12 @@ export default function GuaranteesSection() {
         {/* Trust bar — 3 columns inside Container */}
         <Container>
           <motion.div
+            className="guarantees-trust-bar"
             style={{
               display: "flex",
               flexDirection: "row",
-              gap: 16,
-              maxWidth: 760,
+              gap: 40,
+              maxWidth: 840,
               margin: "0 auto",
               position: "relative",
             }}
@@ -174,7 +175,7 @@ export default function GuaranteesSection() {
                     {g.title}
                   </p>
                 </div>
-                <p style={{ fontSize: 14, color: "#c2c2c2", lineHeight: "1.55em", margin: 0, paddingLeft: 26 }}>
+                <p style={{ fontSize: 14, color: "#c2c2c2", lineHeight: "1.55em", margin: 0 }}>
                   {g.desc}
                 </p>
               </motion.div>
@@ -182,6 +183,15 @@ export default function GuaranteesSection() {
           </motion.div>
         </Container>
       </div>
+      <style>{`
+        @media (max-width: 809px) {
+          .guarantees-trust-bar {
+            flex-direction: column !important;
+            gap: 32px !important;
+            max-width: 100% !important;
+          }
+        }
+      `}</style>
     </Section>
   );
 }

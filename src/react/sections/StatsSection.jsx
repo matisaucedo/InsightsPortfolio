@@ -85,7 +85,7 @@ export default function StatsSection() {
       <Container>
         {/* Headline — two lines centered */}
         <motion.div
-          className="text-center mb-16 md:mb-20"
+          className="text-center mb-10 md:mb-14"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -93,7 +93,7 @@ export default function StatsSection() {
         >
           <h2
             style={{
-              fontSize: "clamp(32px, 4.5vw, 56px)",
+              fontSize: "clamp(24px, 3vw, 36px)",
               fontWeight: 400,
               letterSpacing: "-0.04em",
               lineHeight: "1.05em",

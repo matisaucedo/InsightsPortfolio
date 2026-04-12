@@ -53,8 +53,8 @@ export default function SuccessCases() {
     <Section id="nosotros">
       <Container>
         {/* Header — centered */}
-        <div className="text-center mb-16 md:mb-20">
-          <SectionLabel center>Lo que dicen nuestros clientes</SectionLabel>
+        <div className="mb-16 md:mb-20">
+          <SectionLabel>Lo que dicen nuestros clientes</SectionLabel>
 
           <motion.h2
             style={{
@@ -63,6 +63,7 @@ export default function SuccessCases() {
               letterSpacing: "-0.04em",
               lineHeight: "1.05em",
               color: "#fff",
+              maxWidth: 560,
             }}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -75,7 +76,7 @@ export default function SuccessCases() {
 
         {/* Cards grid */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-3"
+          className="grid grid-cols-1 md:grid-cols-3 gap-5"
           variants={stagger}
           initial="hidden"
           whileInView="visible"
@@ -113,7 +114,15 @@ export default function SuccessCases() {
                   marginBottom: 32,
                 }}
               >
-                "{t.quote}"
+                <span style={{
+                fontFamily: "Georgia, serif",
+                fontSize: 28,
+                lineHeight: "0.6em",
+                verticalAlign: "-0.18em",
+                marginRight: 4,
+                color: "rgba(250,128,57,0.55)",
+                display: "inline-block",
+              }}>"</span>{t.quote}"
               </p>
 
               {/* Author row */}

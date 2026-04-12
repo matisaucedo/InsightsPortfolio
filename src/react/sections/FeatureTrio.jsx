@@ -187,7 +187,7 @@ export default function FeatureTrio() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 12,
+            gap: 20,
           }}
           className="feat-trio-grid"
           variants={container}
