@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
+
+const MotionLink = motion.create(Link);
 import LogoSvg from "../../assets/icons/logo.svg?url";
 import StatsSection from "./sections/StatsSection.jsx";
 import FeatureTrio from "./sections/FeatureTrio.jsx";
@@ -38,7 +40,6 @@ const PROC_STEPS = [
 
 /* ─── Nav ─────────────────────────────────────────────────────────────────── */
 export function Nav() {
-  const navigate = useNavigate();
   const location = useLocation();
   const active = location.pathname.split("/")[1] || "home";
   const links = [
@@ -67,25 +68,23 @@ export function Nav() {
       }}
     >
       {/* Logo */}
-      <button
-        onClick={() => navigate("/")}
-        style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", alignItems: "center" }}
-      >
+      <Link to="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
         <img
           src={LogoSvg}
           alt="Insights Software"
+          height={26}
           style={{ height: 26, width: "auto", display: "block" }}
         />
-      </button>
+      </Link>
 
       {/* Center links */}
       <nav style={{ display: "flex", alignItems: "center", gap: 4 }}>
         {links.map(({ id, label, path }) => (
-          <button
+          <Link
             key={id}
-            onClick={() => navigate(path)}
+            to={path}
             style={{
-              border: "none",
+              textDecoration: "none",
               padding: "6px 14px",
               borderRadius: 8,
               fontSize: 13.5,
@@ -105,12 +104,15 @@ export function Nav() {
             }}
           >
             {label}
-          </button>
+          </Link>
         ))}
       </nav>
 
       {/* CTA pill */}
-      <motion.button
+      <motion.a
+        href={WHATSAPP_URL}
+        target="_blank"
+        rel="noopener noreferrer"
         style={{
           fontSize: 13,
           fontWeight: 500,
@@ -123,13 +125,15 @@ export function Nav() {
           cursor: "pointer",
           letterSpacing: "-0.005em",
           fontFamily: "Inter, system-ui, sans-serif",
+          display: "inline-flex",
+          alignItems: "center",
+          textDecoration: "none",
         }}
         whileHover={{ background: "rgba(255,255,255,0.15)", borderColor: "rgba(255,255,255,0.22)" }}
         transition={{ duration: 0.18 }}
-        onClick={() => window.open(WHATSAPP_URL, "_blank")}
       >
         Hablar con el equipo
-      </motion.button>
+      </motion.a>
     </header>
   );
 }
@@ -164,7 +168,6 @@ export function HomeScreen() {
 
 /* ─── Hero ───────────────────────────────────────────────────────────────── */
 function Hero() {
-  const navigate = useNavigate();
   const heroRef = useRef(null);
   const { scrollYProgress: heroProgress } = useScroll({
     target: heroRef,
@@ -276,7 +279,8 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.65 }}
         >
-          <motion.button
+          <MotionLink
+            to="/proyectos"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -294,16 +298,16 @@ function Hero() {
               cursor: "pointer",
               letterSpacing: "-0.01em",
               fontFamily: "Inter, system-ui, sans-serif",
+              textDecoration: "none",
             }}
             whileHover={{ background: "rgba(255,255,255,0.16)", borderColor: "rgba(255,255,255,0.24)" }}
             transition={{ duration: 0.2 }}
-            onClick={() => navigate("/proyectos")}
           >
             Ver proyectos
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
-          </motion.button>
+          </MotionLink>
         </motion.div>
       </div>
     </section>
@@ -520,7 +524,6 @@ export function ProyectosScreen() {
 
 function ProjectRow({ project, index }) {
   const [hovered, setHovered] = useState(false);
-  const navigate = useNavigate();
   const locked = !!project.locked;
 
   return (
@@ -579,7 +582,7 @@ function ProjectRow({ project, index }) {
               alignItems: "center",
               justifyContent: "center",
             }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="11" width="18" height="11" rx="2"/>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
               </svg>
@@ -648,15 +651,15 @@ function ProjectRow({ project, index }) {
               fontFamily: "Inter, system-ui, sans-serif",
             }}
           >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
             Próximamente
           </span>
         ) : (
-          <button
-            onClick={() => navigate(`/proyectos/${project.id}`)}
+          <Link
+            to={`/proyectos/${project.id}`}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -671,6 +674,7 @@ function ProjectRow({ project, index }) {
               fontFamily: "Inter, system-ui, sans-serif",
               transition: "color 0.2s, border-color 0.2s",
               whiteSpace: "nowrap",
+              textDecoration: "none",
             }}
             onMouseEnter={e => {
               e.currentTarget.style.color = "#fa8039";
@@ -682,10 +686,10 @@ function ProjectRow({ project, index }) {
             }}
           >
             Ver proyecto
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
-          </button>
+          </Link>
         )}
       </div>
     </motion.div>
@@ -935,10 +939,15 @@ function TeamSpotlight() {
                 }}
                 transition={{ duration: 0.52, ease: [0.4, 0, 0.2, 1] }}
                 onClick={() => !isActive && setActive(i)}
+                onKeyDown={(e) => { if ((e.key === "Enter" || e.key === " ") && !isActive) setActive(i); }}
+                role={isActive ? undefined : "button"}
+                tabIndex={isActive ? -1 : 0}
               >
                 <img
                   src={member.img}
                   alt={member.name}
+                  width={280}
+                  height={420}
                   loading="lazy"
                   style={{
                     width: "100%",
@@ -968,6 +977,7 @@ function TeamSpotlight() {
           {/* Prev */}
           <motion.button
             onClick={prev}
+            aria-label="Anterior"
             whileHover={{ background: "rgba(255,255,255,0.13)", borderColor: "rgba(255,255,255,0.20)" }}
             whileTap={{ scale: 0.90 }}
             transition={{ duration: 0.18 }}
@@ -980,7 +990,7 @@ function TeamSpotlight() {
               display: "flex", alignItems: "center", justifyContent: "center",
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 18l-6-6 6-6"/>
             </svg>
           </motion.button>
@@ -1022,6 +1032,7 @@ function TeamSpotlight() {
           {/* Next */}
           <motion.button
             onClick={next}
+            aria-label="Siguiente"
             whileHover={{ background: "rgba(255,255,255,0.13)", borderColor: "rgba(255,255,255,0.20)" }}
             whileTap={{ scale: 0.90 }}
             transition={{ duration: 0.18 }}
@@ -1034,7 +1045,7 @@ function TeamSpotlight() {
               display: "flex", alignItems: "center", justifyContent: "center",
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 18l6-6-6-6"/>
             </svg>
           </motion.button>
@@ -1080,7 +1091,7 @@ export function NosotrosScreen() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ color: "rgba(255,255,255,0.28)" }}>
+            <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ color: "rgba(255,255,255,0.28)" }}>
               <path d="M1 5h8M5 1l4 4-4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             <span style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.40)" }}>
@@ -1194,6 +1205,8 @@ export function NosotrosScreen() {
               <img
                 src="/assets/images/speaker.jpg"
                 alt="Charla en Buenos Aires sobre IA"
+                width={600}
+                height={450}
                 loading="lazy"
                 style={{ width: "100%", display: "block", objectFit: "cover", aspectRatio: "4/3" }}
                 onError={e => { e.target.parentElement.style.background = "#111"; e.target.style.display = "none"; }}
@@ -1248,7 +1261,7 @@ export function NosotrosScreen() {
                 lineHeight: "1.6em",
               }}
             >
-              "El que use software con IA va a trabajar mucho más. El que no lo use va a quedar atrás."
+              &ldquo;El que use software con IA va a trabajar mucho más. El que no lo use va a quedar atrás.&rdquo;
             </blockquote>
           </div>
         </motion.div>
@@ -1286,7 +1299,7 @@ export function NosotrosScreen() {
                 whileHover={{ y: -4, borderColor: "rgba(255,255,255,0.13)", transition: { duration: 0.22 } }}
               >
                 <p style={{ fontSize: 14, color: "rgba(255,255,255,0.68)", lineHeight: "1.55em", marginBottom: 20 }}>
-                  "{t.q}"
+                  &ldquo;{t.q}&rdquo;
                 </p>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div
@@ -1340,7 +1353,10 @@ export function NosotrosScreen() {
           <p style={{ fontSize: 16, color: "#8a8a8a", marginBottom: 36, lineHeight: "1.5em" }}>
             En menos de una llamada definimos qué necesitás, cuánto cuesta y cuándo lo tenés listo.
           </p>
-          <motion.button
+          <motion.a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -1355,16 +1371,16 @@ export function NosotrosScreen() {
               height: 52,
               cursor: "pointer",
               fontFamily: "Inter, system-ui, sans-serif",
+              textDecoration: "none",
             }}
             whileHover={{ background: "rgba(255,255,255,0.15)", borderColor: "rgba(255,255,255,0.22)" }}
             transition={{ duration: 0.2 }}
-            onClick={() => window.open(WHATSAPP_URL, "_blank")}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
             </svg>
             Hablar con el equipo
-          </motion.button>
+          </motion.a>
         </motion.div>
       </div>
       <Footer />
@@ -1400,7 +1416,6 @@ const FOOTER_COLS = [
 ];
 
 function Footer() {
-  const navigate = useNavigate();
   return (
     <footer style={{ borderTop: "1px solid rgba(255,255,255,0.07)", background: "#000" }}>
       <div
@@ -1426,23 +1441,21 @@ function Footer() {
                 return (
                   <li key={label}>
                     {isLink ? (
-                      <button
-                        onClick={() => navigate(item.path)}
+                      <Link
+                        to={item.path}
                         style={{
-                          background: "none",
-                          border: "none",
-                          padding: 0,
+                          textDecoration: "none",
                           fontSize: 13,
                           color: "#8a8a8a",
                           cursor: "pointer",
                           fontFamily: "Inter, system-ui, sans-serif",
                           transition: "color 0.2s",
                         }}
-                        onMouseEnter={e => (e.target.style.color = "#fff")}
-                        onMouseLeave={e => (e.target.style.color = "#8a8a8a")}
+                        onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "#8a8a8a")}
                       >
                         {label}
-                      </button>
+                      </Link>
                     ) : (
                       <span style={{ fontSize: 13, color: "#8a8a8a", lineHeight: "1.4em" }}>
                         {label}

@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+
+const MotionLink = motion.create(Link);
 import { PROJECTS, WHATSAPP_URL } from "../data/projects.js";
 import Container from "../components/ui/Container.jsx";
 import SectionLabel from "../components/ui/SectionLabel.jsx";
@@ -32,32 +34,30 @@ const fadeItem = {
 
 /* ── Shared subcomponents ─────────────────────────────────────────────────── */
 
-function BackButton({ navigate }) {
+function BackButton() {
   return (
-    <motion.button
+    <MotionLink
+      to="/proyectos"
       variants={fadeItem}
-      onClick={() => navigate("/proyectos")}
       style={{
         display: "inline-flex",
         alignItems: "center",
         gap: 8,
-        background: "none",
-        border: "none",
-        padding: 0,
         color: "rgba(255,255,255,0.38)",
         fontSize: 13,
         cursor: "pointer",
         fontFamily: "Inter, system-ui, sans-serif",
         marginBottom: 48,
         transition: "color 0.2s",
+        textDecoration: "none",
       }}
       whileHover={{ color: "rgba(255,255,255,0.80)" }}
     >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
         <path d="M19 12H5M12 19l-7-7 7-7" />
       </svg>
       Proyectos
-    </motion.button>
+    </MotionLink>
   );
 }
 
@@ -94,9 +94,11 @@ function Tags({ tags, center = false }) {
 
 function CtaButton() {
   return (
-    <motion.button
+    <motion.a
+      href={WHATSAPP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
       variants={fadeItem}
-      onClick={() => window.open(WHATSAPP_URL, "_blank")}
       style={{
         display: "inline-flex",
         alignItems: "center",
@@ -113,15 +115,16 @@ function CtaButton() {
         fontFamily: "Inter, system-ui, sans-serif",
         whiteSpace: "nowrap",
         flexShrink: 0,
+        textDecoration: "none",
       }}
       whileHover={{ background: "rgba(250,128,57,0.18)", borderColor: "rgba(250,128,57,0.55)" }}
       transition={{ duration: 0.2 }}
     >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
         <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
       </svg>
       Contactar sobre este proyecto
-    </motion.button>
+    </motion.a>
   );
 }
 
@@ -157,7 +160,7 @@ function MockupCaption({ label }) {
 /* ══════════════════════════════════════════════════════════════════════════
    HERO — title, subtitle, description, tags (shared by both layouts)
    ══════════════════════════════════════════════════════════════════════════ */
-function ProjectHero({ project, navigate, centered }) {
+function ProjectHero({ project, centered }) {
   return (
     <motion.div
       variants={staggerParent}
@@ -170,7 +173,7 @@ function ProjectHero({ project, navigate, centered }) {
         textAlign: centered ? "center" : "left",
       }}
     >
-      <BackButton navigate={navigate} />
+      <BackButton />
 
       <SectionLabel center={centered}>{project.nl}</SectionLabel>
 
@@ -245,10 +248,22 @@ function ProjectHero({ project, navigate, centered }) {
    Animated pill slides between options via shared layoutId.
    ══════════════════════════════════════════════════════════════════════════ */
 function MockupSwitcher({ value, onChange, options }) {
+  function handleKeyDown(e) {
+    const idx = options.findIndex((o) => o.key === value);
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      e.preventDefault();
+      onChange(options[(idx + 1) % options.length].key);
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault();
+      onChange(options[(idx - 1 + options.length) % options.length].key);
+    }
+  }
+
   return (
     <div
       role="tablist"
       aria-label="Vista del mockup"
+      onKeyDown={handleKeyDown}
       style={{
         position: "relative",
         display: "inline-flex",
@@ -286,6 +301,7 @@ function MockupSwitcher({ value, onChange, options }) {
             type="button"
             role="tab"
             aria-selected={active}
+            tabIndex={active ? 0 : -1}
             onClick={() => onChange(opt.key)}
             style={{
               position: "relative",
@@ -481,7 +497,7 @@ function HeroGlow() {
   );
 }
 
-function MockupLayout({ project, navigate }) {
+function MockupLayout({ project }) {
   return (
     <section
       className="section-py project-hero-pad"
@@ -490,7 +506,7 @@ function MockupLayout({ project, navigate }) {
       <HeroGlow />
       <div style={{ position: "relative", zIndex: 1 }}>
         <Container>
-          <ProjectHero project={project} navigate={navigate} centered />
+          <ProjectHero project={project} centered />
           <MockupBlock mockup={project.mockup} />
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -510,12 +526,12 @@ function MockupLayout({ project, navigate }) {
 /* ══════════════════════════════════════════════════════════════════════════
    DEFAULT LAYOUT — gallery-driven, used when a project has no mockup
    ══════════════════════════════════════════════════════════════════════════ */
-function DefaultLayout({ project, navigate }) {
+function DefaultLayout({ project }) {
   return (
     <section className="section-py project-hero-pad" style={{ minHeight: "100vh", background: "#000" }}>
       <Container>
         <div style={{ marginBottom: 64 }}>
-          <ProjectHero project={project} navigate={navigate} centered={false} />
+          <ProjectHero project={project} centered={false} />
         </div>
 
         <motion.div
@@ -558,7 +574,6 @@ function DefaultLayout({ project, navigate }) {
    ══════════════════════════════════════════════════════════════════════════ */
 export default function ProjectPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const project = PROJECTS.find((p) => p.id === id);
 
   if (!project) {
@@ -576,26 +591,26 @@ export default function ProjectPage() {
         }}
       >
         <p style={{ fontSize: 15 }}>Proyecto no encontrado.</p>
-        <button
-          onClick={() => navigate("/proyectos")}
+        <Link
+          to="/proyectos"
           style={{
             marginTop: 24,
-            background: "none",
-            border: "none",
+            display: "inline-block",
             color: "#fa8039",
             fontSize: 13,
             cursor: "pointer",
             fontFamily: "Inter, system-ui, sans-serif",
+            textDecoration: "none",
           }}
         >
           ← Volver a proyectos
-        </button>
+        </Link>
       </div>
     );
   }
 
   if (project.mockup) {
-    return <MockupLayout project={project} navigate={navigate} />;
+    return <MockupLayout project={project} />;
   }
-  return <DefaultLayout project={project} navigate={navigate} />;
+  return <DefaultLayout project={project} />;
 }

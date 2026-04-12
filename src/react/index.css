@@ -138,6 +138,16 @@
   }
 }
 
+/* ── Focus-visible — accent ring for keyboard nav ──────────────────── */
+:focus-visible {
+  outline: 2px solid rgba(250,128,57,0.75);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* ── Pulsing Orb (Minta ambient decoration) ──────────────────────────── */
 @keyframes pulsing-orb {
   0% {

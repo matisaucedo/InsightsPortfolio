@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import Lenis from "lenis";
 import "./index.css";
 import { Nav, HomeScreen, ProyectosScreen, NosotrosScreen, screenVariants } from "./HomePage.jsx";
@@ -36,6 +36,7 @@ function App() {
   }, [location.pathname]);
 
   return (
+    <MotionConfig reducedMotion="user">
     <div style={{ background: "#000", minHeight: "100vh", fontFamily: "Inter, system-ui, sans-serif" }}>
       <GrainOverlay />
       <Nav />
@@ -57,6 +58,7 @@ function App() {
         </motion.div>
       </AnimatePresence>
     </div>
+    </MotionConfig>
   );
 }
 
