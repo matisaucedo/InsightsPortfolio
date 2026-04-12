@@ -93,7 +93,7 @@ export default function StatsSection() {
         >
           <h2
             style={{
-              fontSize: "clamp(32px, 5vw, 56px)",
+              fontSize: "clamp(32px, 4.5vw, 56px)",
               fontWeight: 400,
               letterSpacing: "-0.04em",
               lineHeight: "1.05em",

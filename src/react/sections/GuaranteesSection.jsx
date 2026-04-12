@@ -103,7 +103,7 @@ export default function GuaranteesSection() {
               </h2>
             </FadeUp>
             <FadeUp delay={0.15}>
-              <p style={{ fontSize: 16, color: "#c2c2c2", maxWidth: 400, margin: 0, lineHeight: "1.5em" }}>
+              <p style={{ fontSize: 16, color: "#c2c2c2", maxWidth: 400, margin: 0, lineHeight: "1.6em" }}>
                 Sin letra chica, sin excusas. Si no quedás conforme, te devolvemos el 100%.
               </p>
             </FadeUp>

@@ -111,10 +111,10 @@ export default function AIFeaturesSection() {
 
           <motion.h2
             style={{
-              fontSize: "clamp(30px, 4.5vw, 52px)",
+              fontSize: "clamp(28px, 4.5vw, 52px)",
               fontWeight: 400,
               letterSpacing: "-0.04em",
-              lineHeight: "1.02em",
+              lineHeight: "1.05em",
               color: "#fff",
               marginBottom: 20,
             }}
@@ -128,7 +128,7 @@ export default function AIFeaturesSection() {
 
           <motion.p
             style={{
-              fontSize: 15,
+              fontSize: 16,
               color: "rgba(255,255,255,0.42)",
               maxWidth: 380,
               margin: "0 auto",

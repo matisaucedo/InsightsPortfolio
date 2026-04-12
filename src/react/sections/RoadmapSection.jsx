@@ -117,7 +117,7 @@ export default function RoadmapSection() {
           </motion.h2>
 
           <motion.p
-            style={{ fontSize: 16, color: "#8a8a8a", maxWidth: 420, lineHeight: "1.5em" }}
+            style={{ fontSize: 16, color: "#8a8a8a", maxWidth: 420, lineHeight: "1.6em" }}
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -261,7 +261,7 @@ export default function RoadmapSection() {
                         fontSize: 14,
                         fontWeight: 400,
                         color: "rgba(255, 255, 255, 0.7)",
-                        lineHeight: "1.4em",
+                        lineHeight: "1.55em",
                         letterSpacing: "normal",
                       }}
                     >

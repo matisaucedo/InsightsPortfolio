@@ -255,7 +255,7 @@ export default function FeatureTrio() {
                 </div>
                 <p
                   style={{
-                    fontSize: 13.5,
+                    fontSize: 14,
                     color: "#8a8a8a",
                     lineHeight: "1.6em",
                     letterSpacing: "-0.005em",

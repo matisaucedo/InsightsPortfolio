@@ -107,7 +107,7 @@ export default function SuccessCases() {
                 style={{
                   fontSize: 16,
                   color: "rgba(255,255,255,0.72)",
-                  lineHeight: "1.55em",
+                  lineHeight: "1.6em",
                   letterSpacing: "-0.01em",
                   flex: 1,
                   marginBottom: 32,
