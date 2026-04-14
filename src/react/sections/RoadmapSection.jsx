@@ -1,5 +1,10 @@
-import React, { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import React, { useRef, useState } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionValueEvent,
+} from "framer-motion";
 import Section from "../components/ui/Section.jsx";
 import Container from "../components/ui/Container.jsx";
 import SectionLabel from "../components/ui/SectionLabel.jsx";
@@ -31,56 +36,372 @@ const STEPS = [
   },
 ];
 
-/* Exact Minta step positions on the SVG curve */
+/* Positions on the SVG S-curve — calibrated to viewBox 797×591 */
 const STEP_POSITIONS = [
-  { top: "10%", left: "8%" },
-  { top: "32%", left: "22%" },
-  { top: "48%", left: "40%" },
-  { top: "72%", left: "68%" },
+  { top: "4%",  left: "55%" },
+  { top: "34%", left: "18%" },
+  { top: "60%", left: "52%" },
+  { top: "88%", left: "78%" },
 ];
 
+const PATH_LENGTH = 1497.953125;
+const THRESHOLDS = [0.15, 0.4, 0.65, 0.9];
+
+/* ── Metallic Orb ──────────────────────────────────────────────────── */
+function OrbPin({ isActive }) {
+  return (
+    <div style={{ position: "relative", width: 72, height: 72, flexShrink: 0 }}>
+      {/* Pulse rings — only rendered when active */}
+      {isActive && (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              width: 52,
+              height: 52,
+              borderRadius: "50%",
+              border: "1px solid rgba(250,128,57,0.22)",
+              animation: "roadmap-ring-pulse 1.8s ease-out infinite",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              width: 72,
+              height: 72,
+              borderRadius: "50%",
+              border: "1px solid rgba(250,128,57,0.08)",
+              animation: "roadmap-ring-pulse 1.8s ease-out 0.4s infinite",
+            }}
+          />
+        </>
+      )}
+
+      {/* Orb sphere */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 28,
+          height: 28,
+          borderRadius: "50%",
+          background: isActive
+            ? "radial-gradient(circle at 30% 28%, rgba(255,255,255,0.98) 0%, rgba(230,218,205,0.85) 10%, rgba(185,168,148,0.7) 25%, rgba(130,112,92,0.5) 45%, rgba(70,58,44,0.3) 68%, rgba(18,14,10,0.18) 100%)"
+            : "#111",
+          boxShadow: isActive
+            ? "0 0 10px rgba(250,128,57,1), 0 0 22px rgba(250,128,57,0.65), 0 0 48px rgba(250,128,57,0.3), 0 0 80px rgba(250,128,57,0.1), inset 0 1.5px 0 rgba(255,255,255,0.65), inset -1px -2px 6px rgba(0,0,0,0.5)"
+            : "none",
+          opacity: isActive ? 1 : 0.3,
+          transition: "all 0.5s ease",
+        }}
+      />
+    </div>
+  );
+}
+
+/* ── Content card ──────────────────────────────────────────────────── */
+function StepCard({ step, isActive }) {
+  return (
+    <div
+      style={{
+        background: "rgba(9,10,14,0.94)",
+        border: "1px solid rgba(255,255,255,0.065)",
+        borderRadius: 14,
+        padding: "18px 20px",
+        backdropFilter: "blur(16px)",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03)",
+        opacity: isActive ? 1 : 0.3,
+        transition: "opacity 0.5s ease",
+        width: 240,
+      }}
+    >
+      {/* Pill */}
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          background: "rgba(250,128,57,0.1)",
+          border: "1px solid rgba(250,128,57,0.22)",
+          borderRadius: 999,
+          fontSize: 9,
+          fontWeight: 700,
+          letterSpacing: "0.1em",
+          color: "#fa8039",
+          padding: "3px 10px",
+          marginBottom: 10,
+          textTransform: "uppercase",
+        }}
+      >
+        Paso {step.num}
+      </div>
+
+      {/* Title */}
+      <div
+        style={{
+          fontSize: 15,
+          fontWeight: 500,
+          letterSpacing: "-0.025em",
+          color: "#fff",
+          marginBottom: 6,
+          lineHeight: "1.3em",
+        }}
+      >
+        {step.title}
+      </div>
+
+      {/* Body */}
+      <div
+        style={{
+          fontSize: 12,
+          color: "rgba(255,255,255,0.52)",
+          lineHeight: "1.55em",
+        }}
+      >
+        {step.description}
+      </div>
+    </div>
+  );
+}
+
+/* ── Desktop layout ────────────────────────────────────────────────── */
+function DesktopRoadmap({ scrollYProgress, activeSteps }) {
+  const strokeDashoffset = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [PATH_LENGTH, 0]
+  );
+
+  return (
+    <div
+      className="roadmap-desktop"
+      style={{ position: "relative", width: "100%", aspectRatio: "1.35 / 1", minHeight: 580 }}
+    >
+      {/* SVG curve */}
+      <svg
+        viewBox="0 0 797 591"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          overflow: "visible",
+        }}
+        preserveAspectRatio="xMidYMid slice"
+      >
+        {/* Static dim rail */}
+        <path
+          d="M 464.449 0 C 464.449 0 -290.439 232.723 124.581 327.777 C 539.601 422.831 952.039 476.521 714.06 591"
+          stroke="rgba(255,255,255,0.07)"
+          strokeWidth="1"
+          fill="none"
+        />
+
+        {/* Animated glow path */}
+        <g
+          style={{
+            filter:
+              "drop-shadow(0 0 2px rgba(250,128,57,1)) drop-shadow(0 0 8px rgba(250,128,57,0.85)) drop-shadow(0 0 20px rgba(250,128,57,0.5)) drop-shadow(0 0 45px rgba(250,128,57,0.2))",
+          }}
+        >
+          <motion.path
+            d="M 464.449 0 C 464.449 0 -290.439 232.723 124.581 327.777 C 539.601 422.831 952.039 476.521 714.06 591"
+            stroke="#fa8039"
+            strokeWidth="1.5"
+            fill="none"
+            strokeLinecap="round"
+            style={{
+              strokeDasharray: PATH_LENGTH,
+              strokeDashoffset,
+            }}
+          />
+        </g>
+      </svg>
+
+      {/* Steps */}
+      {STEPS.map((step, i) => {
+        const isActive = activeSteps[i];
+        /* alternate card side based on position */
+        return (
+          <div
+            key={step.num}
+            style={{
+              position: "absolute",
+              top: STEP_POSITIONS[i].top,
+              left: STEP_POSITIONS[i].left,
+              transform: "translate(-50%, -50%)",
+              display: "flex",
+              alignItems: "center",
+              gap: 0,
+            }}
+          >
+            {/* Step number */}
+            <span
+              style={{
+                position: "absolute",
+                top: -18,
+                left: "50%",
+                transform: "translateX(-50%)",
+                fontSize: 11,
+                fontFamily: "'Courier New', monospace",
+                color: "rgba(250,128,57,0.65)",
+                letterSpacing: "0.05em",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {step.num}
+            </span>
+
+            <OrbPin isActive={isActive} />
+
+            {/* Card — toggled side */}
+            <div
+              style={{
+                position: "absolute",
+                ...(i % 2 === 0
+                  ? { left: "calc(100% + 12px)" }
+                  : { right: "calc(100% + 12px)" }),
+                top: "50%",
+                transform: "translateY(-50%)",
+              }}
+            >
+              <StepCard step={step} isActive={isActive} index={i} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ── Mobile layout ─────────────────────────────────────────────────── */
+function MobileRoadmap({ scrollYProgress, activeSteps }) {
+  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  return (
+    <div
+      className="roadmap-mobile"
+      style={{ position: "relative", paddingLeft: 44, display: "none" }}
+    >
+      {/* Vertical rail */}
+      <div
+        style={{
+          position: "absolute",
+          left: 14,
+          top: 0,
+          bottom: 0,
+          width: 1.5,
+          background: "rgba(255,255,255,0.06)",
+        }}
+      />
+
+      {/* Progress fill */}
+      <motion.div
+        style={{
+          position: "absolute",
+          left: 14,
+          top: 0,
+          width: 1.5,
+          height: lineHeight,
+          background: "linear-gradient(to bottom, #fa8039, rgba(250,128,57,0.25))",
+        }}
+      />
+
+      {/* Glow on fill */}
+      <motion.div
+        style={{
+          position: "absolute",
+          left: 11,
+          top: 0,
+          width: 7,
+          height: lineHeight,
+          background: "linear-gradient(to bottom, rgba(250,128,57,0.6), transparent)",
+          filter: "blur(4px)",
+        }}
+      />
+
+      {/* Steps */}
+      {STEPS.map((step, i) => {
+        const isActive = activeSteps[i];
+        return (
+          <div
+            key={step.num}
+            style={{
+              position: "relative",
+              marginBottom: 32,
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 16,
+            }}
+          >
+            {/* Orb on the rail */}
+            <div
+              style={{
+                position: "absolute",
+                left: -38,
+                top: 4,
+                width: 18,
+                height: 18,
+                borderRadius: "50%",
+                background: isActive
+                  ? "radial-gradient(circle at 30% 28%, rgba(255,255,255,0.98) 0%, rgba(230,218,205,0.85) 10%, rgba(185,168,148,0.7) 25%, rgba(130,112,92,0.5) 45%, rgba(70,58,44,0.3) 68%, rgba(18,14,10,0.18) 100%)"
+                  : "#111",
+                boxShadow: isActive
+                  ? "0 0 6px rgba(250,128,57,1), 0 0 14px rgba(250,128,57,0.6), 0 0 30px rgba(250,128,57,0.25), inset 0 1px 0 rgba(255,255,255,0.6)"
+                  : "none",
+                opacity: isActive ? 1 : 0.3,
+                transition: "all 0.5s ease",
+                flexShrink: 0,
+              }}
+            />
+
+            {/* Card */}
+            <div style={{ flex: 1 }}>
+              <StepCard step={step} isActive={isActive} index={i} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ── Root ──────────────────────────────────────────────────────────── */
 export default function RoadmapSection() {
   const containerRef = useRef(null);
-  const pathRef = useRef(null);
+  const [activeSteps, setActiveSteps] = useState([false, false, false, false]);
 
-  useEffect(() => {
-    /* Animate the orange path stroke dashoffset */
-    const path = pathRef.current;
-    if (!path) return;
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 85%", "end 15%"],
+  });
 
-    const length = 1497.953125;
-    path.style.strokeDasharray = `${length} ${length}`;
-    path.style.strokeDashoffset = `${length}`;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            path.animate(
-              [
-                { strokeDashoffset: `${length}` },
-                { strokeDashoffset: "0" },
-              ],
-              {
-                duration: 1200,
-                easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-                fill: "forwards",
-              }
-            );
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, []);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    setActiveSteps(THRESHOLDS.map((t) => v >= t));
+  });
 
   return (
     <Section id="roadmap">
-      {/* Left ambient glow */}
+      {/* Keyframes injected once */}
+      <style>{`
+        @keyframes roadmap-ring-pulse {
+          0%   { transform: translate(-50%,-50%) scale(1);   opacity: 0.6; }
+          100% { transform: translate(-50%,-50%) scale(1.4); opacity: 0;   }
+        }
+        @media (max-width: 768px) {
+          .roadmap-desktop { display: none !important; }
+          .roadmap-mobile  { display: block !important; }
+        }
+      `}</style>
+
+      {/* Ambient glow */}
       <div
         className="pointer-events-none absolute top-1/3 -left-32 rounded-full"
         style={{
@@ -153,125 +474,10 @@ export default function RoadmapSection() {
           </motion.button>
         </div>
 
-        {/* Roadmap Container — SVG Curve + Steps */}
-        <div
-          ref={containerRef}
-          className="relative"
-          style={{
-            width: "100%",
-            minHeight: 650,
-            aspectRatio: "1.35 / 1",
-          }}
-        >
-          {/* Bezier Curve SVG (Exact Minta path) */}
-          <svg
-            viewBox="0 0 797 591"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              pointerEvents: "none",
-            }}
-            preserveAspectRatio="xMidYMid slice"
-          >
-            {/* Background gray static path */}
-            <path
-              d="M 464.449 0 C 464.449 0 -290.439 232.723 124.581 327.777 C 539.601 422.831 952.039 476.521 714.06 591"
-              stroke="rgba(255, 255, 255, 0.12)"
-              strokeWidth="1"
-              fill="none"
-              strokeLinecap="butt"
-              strokeLinejoin="miter"
-              strokeMiterlimit="4"
-            />
-
-            {/* Animated orange path */}
-            <path
-              ref={pathRef}
-              d="M 464.449 0 C 464.449 0 -290.439 232.723 124.581 327.777 C 539.601 422.831 952.039 476.521 714.06 591"
-              stroke="#fa8039"
-              strokeWidth="1"
-              fill="none"
-              strokeLinecap="butt"
-              strokeLinejoin="miter"
-              strokeMiterlimit="4"
-            />
-          </svg>
-
-          {/* Steps positioned on curve */}
-          <div style={{ position: "relative", width: "100%", height: "100%" }}>
-            {STEPS.map((step, i) => (
-              <motion.div
-                key={step.num}
-                className="absolute"
-                style={{
-                  top: STEP_POSITIONS[i].top,
-                  left: STEP_POSITIONS[i].left,
-                  transform: "translate(-50%, -50%)",
-                  width: 280,
-                  willChange: "transform",
-                }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.65,
-                  ease: "easeOut",
-                  delay: 0.15 + i * 0.12,
-                }}
-              >
-                {/* Step box with dashed orange left border */}
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 24,
-                    width: 280,
-                    padding: "0 0 40px 12px",
-                    borderLeft: "1px dashed #fa8039",
-                    position: "relative",
-                  }}
-                >
-                  {/* Text wrapper */}
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 8,
-                    }}
-                  >
-                    {/* Title */}
-                    <div
-                      style={{
-                        fontSize: 16,
-                        fontWeight: 600,
-                        color: "#fff",
-                        lineHeight: "1.2em",
-                        letterSpacing: "normal",
-                      }}
-                    >
-                      {step.num} · {step.title}
-                    </div>
-
-                    {/* Description */}
-                    <div
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 400,
-                        color: "rgba(255, 255, 255, 0.7)",
-                        lineHeight: "1.55em",
-                        letterSpacing: "normal",
-                      }}
-                    >
-                      {step.description}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+        {/* Roadmap canvas */}
+        <div ref={containerRef}>
+          <DesktopRoadmap scrollYProgress={scrollYProgress} activeSteps={activeSteps} />
+          <MobileRoadmap  scrollYProgress={scrollYProgress} activeSteps={activeSteps} />
         </div>
       </Container>
     </Section>

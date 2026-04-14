@@ -90,7 +90,7 @@ function MintaBeam() {
 
 export default function AIFeaturesSection() {
   return (
-    <Section id="ai" style={{ paddingTop: 96, paddingBottom: 96 }}>
+    <Section id="ai">
       {/* Top ambient glow — parallax */}
       <ParallaxLayer speed={0.3} className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 z-0">
         <div
@@ -427,11 +427,6 @@ export default function AIFeaturesSection() {
         </div>
       </Container>
 
-      <style>{`
-        @media (max-width: 809px) {
-          .ai-split-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
-        }
-      `}</style>
     </Section>
   );
 }
