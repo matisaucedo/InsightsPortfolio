@@ -2,11 +2,11 @@ import { motion } from "framer-motion";
 import Container from "../components/ui/Container.jsx";
 import Section from "../components/ui/Section.jsx";
 import SectionLabel from "../components/ui/SectionLabel.jsx";
-import ParallaxLayer from "../components/ui/ParallaxLayer.jsx";
+import IconItem from "../components/ui/IconItem.jsx";
 
 /*
  * Feature Trio — matches Minta "One app. Three superpowers."
- * Card anatomy: image area (aspect ~1.1) → icon + title + desc
+ * Card anatomy: image area (aspect ~1.1) → IconItem (icon + title + desc)
  * Glass card: rgba(255,255,255,0.06) bg, border rgba(255,255,255,0.12),
  * inset top highlight, backdrop blur, 16px radius.
  * Stagger from y:64, opacity 0.
@@ -15,7 +15,7 @@ import ParallaxLayer from "../components/ui/ParallaxLayer.jsx";
 const CARDS = [
   {
     visualColor: "rgba(232,93,47,0.08)",
-    glowColor: "rgba(232,93,47,0.22)",
+    glowColor: "rgba(232,93,47,0.30)",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2"/>
@@ -27,7 +27,7 @@ const CARDS = [
   },
   {
     visualColor: "rgba(255,255,255,0.03)",
-    glowColor: "rgba(120,120,255,0.16)",
+    glowColor: "rgba(120,120,255,0.22)",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 6h16M4 12h16M4 18h7"/>
@@ -40,7 +40,7 @@ const CARDS = [
   },
   {
     visualColor: "rgba(232,93,47,0.05)",
-    glowColor: "rgba(232,93,47,0.18)",
+    glowColor: "rgba(232,93,47,0.24)",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
@@ -61,8 +61,9 @@ const card = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: [0.22, 1, 0.36, 1] } },
 };
 
-/* Visual area — abstract representation per card */
+/* Visual area — single merged radial gradient (glow center + color fade) */
 function CardVisual({ color, glow, index }) {
+  const yPos = index === 1 ? "60%" : "40%";
   return (
     <div
       style={{
@@ -74,32 +75,14 @@ function CardVisual({ color, glow, index }) {
         borderBottom: "1px solid rgba(255,255,255,0.07)",
       }}
     >
-      {/* Base gradient */}
+      {/* Single merged gradient: glow center → color mid → transparent */}
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background: `radial-gradient(ellipse 80% 70% at 50% ${index === 1 ? "60%" : "40%"}, ${color} 0%, transparent 75%)`,
+          background: `radial-gradient(ellipse 65% 60% at 50% ${yPos}, ${glow} 0%, ${color} 35%, transparent 80%)`,
         }}
       />
-
-      {/* Center glow orb — parallax */}
-      <ParallaxLayer speed={0.25}>
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 120,
-            height: 120,
-            borderRadius: "50%",
-            background: glow,
-            filter: "blur(40px)",
-            opacity: 0.8,
-          }}
-        />
-      </ParallaxLayer>
 
       {/* Decorative grid lines */}
       <svg
@@ -217,52 +200,9 @@ export default function FeatureTrio() {
                 transition: { duration: 0.28, ease: "easeOut" },
               }}
             >
-              {/* Visual */}
               <CardVisual color={c.visualColor} glow={c.glowColor} index={i} />
-
-              {/* Text */}
               <div style={{ padding: "22px 24px 28px", flex: 1 }}>
-                {/* Icon + title row */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: 10,
-                    marginBottom: 10,
-                  }}
-                >
-                  <div
-                    style={{
-                      marginTop: 1,
-                      flexShrink: 0,
-                      color: "#fff",
-                      opacity: 0.75,
-                    }}
-                  >
-                    {c.icon}
-                  </div>
-                  <p
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 500,
-                      letterSpacing: "-0.02em",
-                      lineHeight: "1.2em",
-                      color: "#fff",
-                    }}
-                  >
-                    {c.title}
-                  </p>
-                </div>
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: "#8a8a8a",
-                    lineHeight: "1.6em",
-                    letterSpacing: "-0.005em",
-                  }}
-                >
-                  {c.desc}
-                </p>
+                <IconItem icon={c.icon} title={c.title} desc={c.desc} />
               </div>
             </motion.div>
           ))}
