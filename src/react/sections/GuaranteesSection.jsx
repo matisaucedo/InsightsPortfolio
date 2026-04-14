@@ -15,7 +15,7 @@ const GUARANTEES = [
       </svg>
     ),
     title: "Garantía de devolución",
-    desc: "Si no estás conforme con el resultado, te devolvemos el 100% del dinero.",
+    desc: "Aplica en los primeros 30 días. Pedís el reembolso, procesamos en 48 horas. Sin formularios, sin preguntas.",
   },
   {
     icon: (
@@ -42,7 +42,7 @@ const GUARANTEES = [
       </svg>
     ),
     title: "Tuyo para siempre",
-    desc: "Código fuente completo, documentación y sesión de traspaso. Sin dependencia de Insights.",
+    desc: "Código fuente completo, documentación y sesión de traspaso incluida. Lo que construimos, queda tuyo para siempre.",
   },
 ];
 

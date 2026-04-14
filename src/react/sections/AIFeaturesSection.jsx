@@ -312,7 +312,6 @@ export default function AIFeaturesSection() {
             >
               La IA explica cada decisión en lenguaje claro, detecta problemas
               antes de que ocurran y aprende de tus hábitos con el tiempo.
-              Cuanto más lo usás, más inteligente se vuelve.
             </motion.p>
 
             {/* Feature list */}
