@@ -4,6 +4,7 @@ import Container from "../components/ui/Container.jsx";
 import SectionLabel from "../components/ui/SectionLabel.jsx";
 import FadeUp from "../components/ui/FadeUp.jsx";
 import { childVariants } from "../components/ui/StaggerGrid.jsx";
+import IconItem from "../components/ui/IconItem.jsx";
 
 const GUARANTEES = [
   {
@@ -167,17 +168,9 @@ export default function GuaranteesSection() {
               <motion.div
                 key={g.title}
                 variants={childVariants}
-                style={{ flex: "1 0 0px", display: "flex", flexDirection: "column", gap: 8 }}
+                style={{ flex: "1 0 0px" }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ color: "#fff", flexShrink: 0, lineHeight: 0 }}>{g.icon}</span>
-                  <p style={{ fontSize: 15, fontWeight: 500, color: "#fff", letterSpacing: "-0.02em", lineHeight: "1.3em", margin: 0 }}>
-                    {g.title}
-                  </p>
-                </div>
-                <p style={{ fontSize: 14, color: "#c2c2c2", lineHeight: "1.55em", margin: 0 }}>
-                  {g.desc}
-                </p>
+                <IconItem icon={g.icon} title={g.title} desc={g.desc} gap={8} titleSize={15} descColor="#c2c2c2" />
               </motion.div>
             ))}
           </motion.div>
