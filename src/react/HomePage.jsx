@@ -1311,9 +1311,9 @@ export function NosotrosScreen() {
         <div style={{ marginBottom: 80 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 48 }}>
             <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.07)" }} />
-            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 500 }}>
+            <h2 style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 500, margin: 0 }}>
               Lo que dicen nuestros clientes
-            </span>
+            </h2>
             <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.07)" }} />
           </div>
 
