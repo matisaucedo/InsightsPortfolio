@@ -36,13 +36,13 @@ export default function Gallery({ images = [] }) {
             }}
             style={{
               position: "relative",
-              width: isActive ? "50%" : "8%",
+              flex: isActive ? "6 1 0%" : "1 1 0%",
               height: "100%",
-              flexShrink: 0,
               borderRadius: "12px",
               overflow: "hidden",
               cursor: isActive ? "default" : "pointer",
-              transition: "width 0.5s ease-in-out",
+              transition: "flex 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+              willChange: "flex",
             }}
           >
             {/* Image */}
