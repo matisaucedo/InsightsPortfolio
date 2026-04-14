@@ -175,3 +175,8 @@ Sonnet (sesión principal) los invoca cuando matchean. Si no lo hace, decirle ex
 **Sistema de Mockup** (project_mockup_system.md en memoria): iPhone funcionando ✅. **Próximo task:** Mac mockup interactivo, replica la arquitectura de DeviceMockup con frame PNG de MacBook (z:2 screen div, z:1 frame img).
 
 **Verificación visual:** `npx playwright screenshot http://localhost:5173/ out.png` (Playwright MCP deshabilitado por costo de tokens — usar CLI).
+
+## Sync Design System
+
+Al terminar una feature visual (nuevos tokens, cambios en `src/index.css`, nuevos componentes con CSS vars),
+abrir sesión de bóveda y correr `/sync-design-system insights` antes del commit final.

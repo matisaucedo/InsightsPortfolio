@@ -14,7 +14,7 @@ const GUARANTEES = [
       </svg>
     ),
     title: "Garantía de devolución",
-    desc: "Si no quedás conforme con el resultado, te devolvemos el 100% de tu inversión. Sin preguntas.",
+    desc: "Si no estás conforme con el resultado, te devolvemos el 100% del dinero.",
   },
   {
     icon: (
