@@ -3,6 +3,7 @@ import Container from "../components/ui/Container.jsx";
 import Section from "../components/ui/Section.jsx";
 import FadeUp from "../components/ui/FadeUp.jsx";
 import { childVariants } from "../components/ui/StaggerGrid.jsx";
+import IconItem from "../components/ui/IconItem.jsx";
 
 // Lucide SVG paths — same icons Minta uses
 const BellIcon = () => (
@@ -123,42 +124,8 @@ export default function MobileApp() {
             }}
           >
             {FEATURES.map((f) => (
-              <motion.div
-                key={f.title}
-                variants={childVariants}
-                style={{ display: "flex", flexDirection: "column", gap: 8 }}
-              >
-                {/* Icon + Title row */}
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ color: "#fff", flexShrink: 0, lineHeight: 0 }}>
-                    {f.icon}
-                  </span>
-                  <p
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 500,
-                      color: "#fff",
-                      lineHeight: "1.3em",
-                      letterSpacing: "-0.02em",
-                      margin: 0,
-                    }}
-                  >
-                    {f.title}
-                  </p>
-                </div>
-                {/* Description — indented under icon */}
-                <p
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 400,
-                    color: "#c2c2c2",
-                    lineHeight: "1.55em",
-                    margin: 0,
-                    paddingLeft: 28,
-                  }}
-                >
-                  {f.desc}
-                </p>
+              <motion.div key={f.title} variants={childVariants}>
+                <IconItem icon={f.icon} title={f.title} desc={f.desc} descColor="#c2c2c2" />
               </motion.div>
             ))}
           </motion.div>
