@@ -110,6 +110,7 @@ export default function AIFeaturesSection() {
 
           <motion.h2
             style={{
+              fontFamily: "var(--font-display)",
               fontSize: "clamp(28px, 4.5vw, 52px)",
               fontWeight: 400,
               letterSpacing: "-0.04em",

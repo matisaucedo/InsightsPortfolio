@@ -92,6 +92,7 @@ export default function GuaranteesSection() {
             <FadeUp delay={0.1}>
               <h2
                 style={{
+                  fontFamily: "var(--font-display)",
                   fontSize: "clamp(32px, 4.5vw, 56px)",
                   fontWeight: 400,
                   letterSpacing: "-0.04em",

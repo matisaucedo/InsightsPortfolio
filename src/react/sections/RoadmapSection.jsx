@@ -36,15 +36,18 @@ const STEPS = [
   },
 ];
 
-/* Positions on the SVG S-curve — calibrated to viewBox 797×591 */
+/* Positions on the SVG S-curve — calibrated to viewBox 797×591
+   Alternating 38%/62% ensures cards (maxWidth 240px) never overflow:
+   - left 38% + card-right: extends to ~77%  ✓
+   - left 62% + card-left:  starts at ~22%   ✓  */
 const STEP_POSITIONS = [
-  { top: "4%",  left: "55%" },
-  { top: "34%", left: "18%" },
-  { top: "60%", left: "52%" },
-  { top: "88%", left: "78%" },
+  { top: "6%",  left: "38%" },
+  { top: "37%", left: "62%" },
+  { top: "66%", left: "38%" },
+  { top: "91%", left: "62%" },
 ];
 
-const PATH_LENGTH = 1497.953125;
+const PATH_LENGTH = 1300;
 const THRESHOLDS = [0.15, 0.4, 0.65, 0.9];
 
 /* ── Metallic Orb ──────────────────────────────────────────────────── */
@@ -98,7 +101,7 @@ function OrbPin({ isActive }) {
             ? "0 0 10px rgba(250,128,57,1), 0 0 22px rgba(250,128,57,0.65), 0 0 48px rgba(250,128,57,0.3), 0 0 80px rgba(250,128,57,0.1), inset 0 1.5px 0 rgba(255,255,255,0.65), inset -1px -2px 6px rgba(0,0,0,0.5)"
             : "none",
           opacity: isActive ? 1 : 0.3,
-          transition: "all 0.5s ease",
+          transition: "opacity 0.5s ease",
         }}
       />
     </div>
@@ -110,15 +113,15 @@ function StepCard({ step, isActive }) {
   return (
     <div
       style={{
-        background: "rgba(9,10,14,0.94)",
+        background: "rgba(9,10,14,0.97)",
         border: "1px solid rgba(255,255,255,0.065)",
         borderRadius: 14,
         padding: "18px 20px",
-        backdropFilter: "blur(16px)",
         boxShadow: "0 8px 32px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03)",
         opacity: isActive ? 1 : 0.3,
         transition: "opacity 0.5s ease",
-        width: 240,
+        maxWidth: 240,
+        width: "100%",
       }}
     >
       {/* Pill */}
@@ -194,11 +197,11 @@ function DesktopRoadmap({ scrollYProgress, activeSteps }) {
           pointerEvents: "none",
           overflow: "visible",
         }}
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="none"
       >
         {/* Static dim rail */}
         <path
-          d="M 464.449 0 C 464.449 0 -290.439 232.723 124.581 327.777 C 539.601 422.831 952.039 476.521 714.06 591"
+          d="M 303 35 C 540 70, 560 195, 494 219 C 428 243, 200 360, 303 390 C 406 420, 540 505, 494 538"
           stroke="rgba(255,255,255,0.07)"
           strokeWidth="1"
           fill="none"
@@ -212,7 +215,7 @@ function DesktopRoadmap({ scrollYProgress, activeSteps }) {
           }}
         >
           <motion.path
-            d="M 464.449 0 C 464.449 0 -290.439 232.723 124.581 327.777 C 539.601 422.831 952.039 476.521 714.06 591"
+            d="M 303 35 C 540 70, 560 195, 494 219 C 428 243, 200 360, 303 390 C 406 420, 540 505, 494 538"
             stroke="#fa8039"
             strokeWidth="1.5"
             fill="none"
@@ -250,7 +253,7 @@ function DesktopRoadmap({ scrollYProgress, activeSteps }) {
                 left: "50%",
                 transform: "translateX(-50%)",
                 fontSize: 11,
-                fontFamily: "'Courier New', monospace",
+                fontFamily: "'Geist Mono', 'Courier New', monospace",
                 color: "rgba(250,128,57,0.65)",
                 letterSpacing: "0.05em",
                 whiteSpace: "nowrap",
@@ -357,7 +360,7 @@ function MobileRoadmap({ scrollYProgress, activeSteps }) {
                   ? "0 0 6px rgba(250,128,57,1), 0 0 14px rgba(250,128,57,0.6), 0 0 30px rgba(250,128,57,0.25), inset 0 1px 0 rgba(255,255,255,0.6)"
                   : "none",
                 opacity: isActive ? 1 : 0.3,
-                transition: "all 0.5s ease",
+                transition: "opacity 0.5s ease",
                 flexShrink: 0,
               }}
             />
@@ -384,23 +387,15 @@ export default function RoadmapSection() {
   });
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setActiveSteps(THRESHOLDS.map((t) => v >= t));
+    setActiveSteps(prev => {
+      const next = THRESHOLDS.map((t) => v >= t);
+      const changed = next.some((val, i) => val !== prev[i]);
+      return changed ? next : prev;
+    });
   });
 
   return (
     <Section id="roadmap">
-      {/* Keyframes injected once */}
-      <style>{`
-        @keyframes roadmap-ring-pulse {
-          0%   { transform: translate(-50%,-50%) scale(1);   opacity: 0.6; }
-          100% { transform: translate(-50%,-50%) scale(1.4); opacity: 0;   }
-        }
-        @media (max-width: 768px) {
-          .roadmap-desktop { display: none !important; }
-          .roadmap-mobile  { display: block !important; }
-        }
-      `}</style>
-
       {/* Ambient glow */}
       <div
         className="pointer-events-none absolute top-1/3 -left-32 rounded-full"
@@ -408,7 +403,7 @@ export default function RoadmapSection() {
           width: 400,
           height: 400,
           background: "radial-gradient(circle, rgba(232,93,47,0.05) 0%, transparent 70%)",
-          filter: "blur(80px)",
+          filter: "blur(40px)",
         }}
       />
 
@@ -419,6 +414,7 @@ export default function RoadmapSection() {
 
           <motion.h2
             style={{
+              fontFamily: "var(--font-display)",
               fontSize: "clamp(28px, 4.5vw, 52px)",
               fontWeight: 400,
               letterSpacing: "-0.04em",

@@ -44,6 +44,7 @@ export function Nav() {
   const location = useLocation();
   const active = location.pathname.split("/")[1] || "home";
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const drawerRef = useRef(null);
   const links = [
     { id: "home", label: "Inicio", path: "/" },
     { id: "proyectos", label: "Proyectos", path: "/proyectos" },
@@ -55,6 +56,26 @@ export function Nav() {
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, []);
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+    const focusable = drawer.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    first?.focus();
+    const handleKeyDown = (e) => {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last?.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first?.focus(); }
+      }
+    };
+    drawer.addEventListener('keydown', handleKeyDown);
+    return () => drawer.removeEventListener('keydown', handleKeyDown);
+  }, [drawerOpen]);
 
   const burgerVariants = {
     closed: {},
@@ -100,6 +121,7 @@ export function Nav() {
             <Link
               key={id}
               to={path}
+              aria-current={active === id ? "page" : undefined}
               style={{
                 textDecoration: "none",
                 padding: "6px 14px",
@@ -205,6 +227,9 @@ export function Nav() {
             />
             <motion.div
               key="drawer"
+              ref={drawerRef}
+              role="dialog"
+              aria-modal="true"
               initial={{ x: 220 }}
               animate={{ x: 0 }}
               exit={{ x: 220 }}
@@ -249,6 +274,7 @@ export function Nav() {
                   <Link
                     key={id}
                     to={path}
+                    aria-current={active === id ? "page" : undefined}
                     onClick={() => setDrawerOpen(false)}
                     style={{
                       display: "block",
@@ -407,6 +433,7 @@ function Hero() {
       >
         <motion.h1
           style={{
+            fontFamily: "var(--font-display)",
             fontSize: "clamp(36px, 5.5vw, 56px)",
             fontWeight: 400,
             letterSpacing: "-0.04em",
