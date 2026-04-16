@@ -207,6 +207,28 @@ export const PROJECTS = [
       { src: "/assets/images/build_app.jpg", title: "Reportes", caption: "Avance y métricas de construcción" },
     ],
   },
+  {
+    id: "keyboard",
+    niche: "tech",
+    nl: "Hardware · Landing Premium",
+    title: "Insights Hardware",
+    sub: "Type M1 Mechanical Keyboard",
+    desc: "Landing premium para el teclado mecánico Type M1. Liquid glass agresivo, R3F 3D en el hero con 52 keycaps individuales en MeshPhysicalMaterial, specs técnicas completas y responsive para todos los breakpoints.",
+    tags: ["R3F 3D", "Framer Motion", "Liquid Glass", "React 19"],
+    img: "/assets/images/kbsite_hero.png",
+    mockup: {
+      device: "split",
+      macSrc: "http://localhost:5175",
+      iphoneSrc: "http://localhost:5175",
+      macLabel: "Landing",
+      iphoneLabel: "Mobile",
+    },
+    gallery: [
+      { src: "/assets/images/kbsite_hero.png", title: "Hero 3D", caption: "KeyboardCanvas R3F con MeshPhysicalMaterial + glow naranja" },
+      { src: "/assets/images/kbsite_features.png", title: "Full Experience", caption: "Specs técnicas, showcase y CTA con liquid glass" },
+      { src: "/assets/images/kbsite_mobile.png", title: "Mobile View", caption: "Responsive completo en 375px" },
+    ],
+  },
 ];
 
 export const NICHES = [
