@@ -124,7 +124,11 @@
     .project-row {
       display: flex !important;
       flex-direction: column !important;
-      gap: 20px !important;
+      gap: 16px !important;
+    }
+    .project-row-left {
+      flex-direction: column !important;
+      gap: 14px !important;
     }
     .project-row-img-wrap {
       width: 100% !important;

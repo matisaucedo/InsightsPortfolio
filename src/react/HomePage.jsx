@@ -876,7 +876,7 @@ function ProjectRow({ project, index }) {
         background: hovered ? "rgba(255,255,255,0.025)" : "transparent",
       }}
     >
-      <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
+      <div className="project-row-left" style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
         {/* Image thumb */}
         <div
           className="project-row-img-wrap"
