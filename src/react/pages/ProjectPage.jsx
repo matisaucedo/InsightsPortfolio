@@ -222,26 +222,6 @@ function ProjectHero({ project, centered }) {
         </span>
       </motion.div>
 
-      {project.appNote && (
-        <motion.div
-          variants={fadeItem}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: 20,
-            padding: "6px 14px",
-            borderRadius: 999,
-            background: "rgba(250,128,57,0.06)",
-            border: "1px solid rgba(250,128,57,0.22)",
-            fontSize: 12.5,
-            color: "#fa8039",
-            lineHeight: "1.5em",
-          }}
-        >
-          {project.appNote}
-        </motion.div>
-      )}
 
       {centered && (
         <motion.p

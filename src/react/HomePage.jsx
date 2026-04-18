@@ -258,11 +258,11 @@ export function Nav() {
                 right: 0,
                 height: "100dvh",
                 width: 260,
-                background: "rgba(14,14,18,0.62)",
-                backdropFilter: "blur(40px) saturate(200%) brightness(1.12)",
-                WebkitBackdropFilter: "blur(40px) saturate(200%) brightness(1.12)",
-                borderLeft: "1px solid rgba(255,255,255,0.10)",
-                boxShadow: "inset 1px 0 0 rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.12), -20px 0 60px rgba(0,0,0,0.55)",
+                background: "rgba(14,14,18,0.55)",
+                backdropFilter: "blur(48px) saturate(220%) brightness(1.10)",
+                WebkitBackdropFilter: "blur(48px) saturate(220%) brightness(1.10)",
+                borderLeft: "1px solid rgba(250,128,57,0.20)",
+                boxShadow: "inset 1px 0 0 rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.10), -4px 0 48px rgba(250,128,57,0.14), -24px 0 80px rgba(0,0,0,0.60)",
                 padding: "20px 20px 32px",
                 zIndex: 101,
                 display: "flex",
@@ -371,10 +371,12 @@ export function Nav() {
                     gap: 8,
                     height: 46,
                     borderRadius: 999,
-                    background: "linear-gradient(135deg, rgba(250,128,57,0.88) 0%, #fa8039 100%)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    boxShadow: "0 8px 24px -4px rgba(250,128,57,0.40), inset 0 1px 0 rgba(255,255,255,0.22)",
-                    color: "#fff",
+                    background: "rgba(250,128,57,0.13)",
+                    backdropFilter: "blur(24px) saturate(200%)",
+                    WebkitBackdropFilter: "blur(24px) saturate(200%)",
+                    border: "1px solid rgba(250,128,57,0.42)",
+                    boxShadow: "0 0 28px rgba(250,128,57,0.28), 0 8px 24px -4px rgba(250,128,57,0.18), inset 0 1px 0 rgba(255,255,255,0.16)",
+                    color: "#fa8039",
                     fontSize: 13.5,
                     fontWeight: 600,
                     cursor: "pointer",
@@ -550,8 +552,10 @@ function Hero() {
               alignItems: "center",
               gap: 10,
               borderRadius: 999,
-              background: "linear-gradient(135deg, #f97a30 0%, #fa8039 50%, #fb9054 100%)",
-              color: "#fff",
+              background: "rgba(250,128,57,0.14)",
+              backdropFilter: "blur(24px) saturate(200%)",
+              WebkitBackdropFilter: "blur(24px) saturate(200%)",
+              color: "#fa8039",
               fontSize: 14,
               fontWeight: 600,
               padding: "0 28px",
@@ -560,10 +564,10 @@ function Hero() {
               letterSpacing: "-0.01em",
               fontFamily: "Inter, system-ui, sans-serif",
               textDecoration: "none",
-              border: "1px solid rgba(255,255,255,0.18)",
-              boxShadow: "0 10px 32px -6px rgba(250,128,57,0.50), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.16)",
+              border: "1px solid rgba(250,128,57,0.42)",
+              boxShadow: "0 0 28px rgba(250,128,57,0.30), 0 8px 28px -4px rgba(250,128,57,0.22), inset 0 1px 0 rgba(255,255,255,0.18)",
             }}
-            whileHover={{ y: -1, boxShadow: "0 16px 40px -6px rgba(250,128,57,0.60), inset 0 1px 0 rgba(255,255,255,0.34), inset 0 -1px 0 rgba(0,0,0,0.16)" }}
+            whileHover={{ background: "rgba(250,128,57,0.22)", boxShadow: "0 0 40px rgba(250,128,57,0.45), 0 12px 36px -4px rgba(250,128,57,0.30), inset 0 1px 0 rgba(255,255,255,0.22)", y: -1 }}
             whileTap={{ scale: 0.98, y: 0 }}
             transition={{ duration: 0.18 }}
           >
@@ -950,8 +954,8 @@ function ProjectRow({ project, index }) {
       </div>
 
       {/* Right: tags + CTA */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 12 }}>
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end", opacity: locked ? 0.3 : 1 }}>
+      <div className="project-row-right" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 12 }}>
+        <div className="project-row-tags" style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end", opacity: locked ? 0.3 : 1 }}>
           {project.tags.map(t => (
             <span
               key={t}

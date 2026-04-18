@@ -72,16 +72,23 @@ const CTA_STYLE = `
 }
 /* Primary */
 .cta-primary {
-  background: #fff;
-  color: #0a0a0a;
+  background: rgba(250,128,57,0.14);
+  color: #fa8039;
+  border: 1px solid rgba(250,128,57,0.42) !important;
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
   box-shadow:
-    0 10px 30px -10px rgba(250,128,57,0.35),
-    0 4px 12px rgba(0,0,0,0.4),
-    inset 0 1px 0 rgba(255,255,255,0.1);
+    0 0 28px rgba(250,128,57,0.30),
+    0 8px 28px -4px rgba(250,128,57,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.18);
 }
 .cta-primary:hover {
-  background: #fa8039;
-  color: #fff;
+  background: rgba(250,128,57,0.24);
+  color: #fa8039;
+  box-shadow:
+    0 0 40px rgba(250,128,57,0.45),
+    0 12px 36px -4px rgba(250,128,57,0.30),
+    inset 0 1px 0 rgba(255,255,255,0.22);
 }
 .cta-primary:focus-visible {
   outline: 2px solid rgba(250,128,57,0.75);
@@ -116,10 +123,9 @@ export default function GraciasHero() {
     document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
   }
 
-  function handleToggleSound() {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-    }
+  function handleScrollToVideo() {
+    videoRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (videoRef.current?.paused) videoRef.current.play();
   }
 
   const initial = shouldReduce ? "show" : "hidden";
@@ -292,7 +298,7 @@ export default function GraciasHero() {
 
               {/* Secondary — vertical label slide + border brighten */}
               <button
-                onClick={handleToggleSound}
+                onClick={handleScrollToVideo}
                 className="cta-editr cta-secondary touch-manipulation"
               >
                 <span aria-hidden="true" style={{ fontSize: 12 }}>▶</span>
@@ -324,7 +330,7 @@ export default function GraciasHero() {
             >
               <video
                 ref={videoRef}
-                src="/assets/gracias-hero.mp4"
+                src="/gracias-hero.mp4"
                 autoPlay
                 muted
                 loop

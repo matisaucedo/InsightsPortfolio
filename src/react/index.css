@@ -133,6 +133,16 @@
     .project-row-title {
       font-size: clamp(16px, 4.5vw, 19px) !important;
     }
+    .project-row-right {
+      align-items: flex-start !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      width: 100% !important;
+    }
+    .project-row-tags {
+      justify-content: flex-start !important;
+    }
   }
   @media (max-width: 480px) {
     .section-py { padding-top: 48px; padding-bottom: 48px; }
