@@ -134,11 +134,13 @@
       font-size: clamp(16px, 4.5vw, 19px) !important;
     }
     .project-row-right {
+      flex-direction: column !important;
       align-items: flex-start !important;
-      flex-direction: row !important;
-      align-items: center !important;
-      justify-content: space-between !important;
       width: 100% !important;
+      gap: 10px !important;
+    }
+    .project-row-right > *:last-child {
+      align-self: flex-end !important;
     }
     .project-row-tags {
       justify-content: flex-start !important;
