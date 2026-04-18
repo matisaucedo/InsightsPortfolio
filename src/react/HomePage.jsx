@@ -235,9 +235,7 @@ export function Nav() {
               style={{
                 position: "fixed",
                 inset: 0,
-                background: "rgba(0,0,0,0.45)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
+                background: "rgba(0,0,0,0.30)",
                 zIndex: 99,
               }}
             />
@@ -258,9 +256,9 @@ export function Nav() {
                 right: 0,
                 height: "100dvh",
                 width: 260,
-                background: "rgba(10,10,14,0.35)",
-                backdropFilter: "blur(80px) saturate(280%) brightness(1.08)",
-                WebkitBackdropFilter: "blur(80px) saturate(280%) brightness(1.08)",
+                background: "rgba(8,8,12,0.18)",
+                backdropFilter: "blur(100px) saturate(320%) brightness(1.06)",
+                WebkitBackdropFilter: "blur(100px) saturate(320%) brightness(1.06)",
                 borderLeft: "1px solid rgba(250,128,57,0.20)",
                 boxShadow: "inset 1px 0 0 rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.10), -4px 0 48px rgba(250,128,57,0.14), -24px 0 80px rgba(0,0,0,0.60)",
                 padding: "20px 20px 32px",
