@@ -1,14 +1,25 @@
 import { useReducedMotion, motion } from 'framer-motion';
 
+const SPRING_SCROLL = {
+  type: 'spring',
+  damping: 70,
+  stiffness: 240,
+  mass: 1,
+};
+
+const STAGGER_ITEM = (delay = 0) => ({
+  type: 'spring',
+  damping: 70,
+  stiffness: 240,
+  mass: 1,
+  delay,
+});
+
 export default function GraciasBooking() {
   const reduced = useReducedMotion();
 
-  const initial = reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 };
+  const initial = reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 };
   const animate = { opacity: 1, y: 0 };
-  const transition = {
-    duration: 0.8,
-    ease: [0.22, 1, 0.36, 1],
-  };
 
   return (
     <section
@@ -20,59 +31,75 @@ export default function GraciasBooking() {
         paddingRight: 'clamp(24px, 5vw, 40px)',
       }}
     >
-      <motion.div
-        initial={initial}
-        whileInView={animate}
-        viewport={{ once: true, margin: '-80px' }}
-        transition={transition}
-        style={{ maxWidth: 1100, margin: '0 auto' }}
-      >
-        {/* Heading block */}
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        {/* Heading block — staggered spring reveals */}
         <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', marginBottom: 48 }}>
-          <p
+          {/* Eyebrow */}
+          <motion.p
+            initial={initial}
+            whileInView={animate}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={STAGGER_ITEM(0)}
             style={{
-              fontSize: 11,
-              fontWeight: 500,
-              letterSpacing: '0.14em',
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: '0.18em',
               textTransform: 'uppercase',
               color: 'rgba(255,255,255,0.45)',
               marginBottom: 24,
+              fontFamily: 'Inter, system-ui, sans-serif',
             }}
           >
             ● AGENDÁ TU LLAMADA
-          </p>
+          </motion.p>
 
-          <h2
+          {/* H2 — weight 400, tracking -0.04em, lineHeight 1.05 */}
+          <motion.h2
+            initial={initial}
+            whileInView={animate}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={STAGGER_ITEM(0.12)}
             style={{
               fontSize: 'clamp(40px, 6vw, 72px)',
-              fontWeight: 500,
-              letterSpacing: '-0.03em',
-              lineHeight: 1.08,
+              fontWeight: 400,
+              letterSpacing: '-0.04em',
+              lineHeight: 1.05,
               color: '#fff',
               margin: '0 0 20px',
             }}
           >
             Elegí el horario que mejor te quede
-          </h2>
+          </motion.h2>
 
-          <p
+          {/* Subtitle — weight 400, 16px */}
+          <motion.p
+            initial={initial}
+            whileInView={animate}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={STAGGER_ITEM(0.22)}
             style={{
-              fontSize: 'clamp(15px, 1.8vw, 18px)',
+              fontSize: 16,
+              fontWeight: 400,
               color: 'rgba(255,255,255,0.45)',
-              lineHeight: 1.6,
+              lineHeight: 1.5,
               margin: 0,
+              fontFamily: 'Inter, system-ui, sans-serif',
             }}
           >
             La sesión es gratuita, dura 60 minutos y salís con un plan claro para tu software.
-          </p>
+          </motion.p>
         </div>
 
-        {/* Iframe card */}
-        <div
+        {/* Iframe card — spring scroll reveal, glass-dark border, 20px radius */}
+        <motion.div
+          initial={initial}
+          whileInView={animate}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={STAGGER_ITEM(0.32)}
           style={{
             background: 'rgba(255,255,255,0.03)',
             border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: 16,
+            borderRadius: 20,
             padding: 8,
             boxShadow: '0 30px 80px -30px rgba(0,0,0,0.55)',
           }}
@@ -83,7 +110,7 @@ export default function GraciasBooking() {
               width: '100%',
               minHeight: 820,
               border: 0,
-              borderRadius: 10,
+              borderRadius: 14,
               display: 'block',
               touchAction: 'manipulation',
             }}
@@ -91,8 +118,8 @@ export default function GraciasBooking() {
             allow="clipboard-read; clipboard-write"
             title="Agenda tu llamada con Insights Software"
           />
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </section>
   );
 }

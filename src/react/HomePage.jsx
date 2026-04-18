@@ -84,7 +84,7 @@ export function Nav() {
     open: {},
   };
   const line1Variants = { closed: { rotate: 0, y: 0 }, open: { rotate: 45, y: 7 } };
-  const line2Variants = { closed: { opacity: 1 }, open: { opacity: 0 } };
+  const line2Variants = { closed: { opacity: 1, scaleX: 1 }, open: { opacity: 0, scaleX: 0 } };
   const line3Variants = { closed: { rotate: 0, y: 0 }, open: { rotate: -45, y: -7 } };
 
   return (
@@ -100,10 +100,11 @@ export function Nav() {
         justifyContent: "space-between",
         padding: "0 32px",
         height: 56,
-        background: "rgba(0,0,0,0.85)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
+        background: "rgba(10,10,10,0.72)",
+        backdropFilter: "blur(32px) saturate(180%) brightness(1.08)",
+        WebkitBackdropFilter: "blur(32px) saturate(180%) brightness(1.08)",
         borderBottom: "1px solid rgba(255,255,255,0.07)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), 0 1px 0 rgba(0,0,0,0.4)",
       }}
     >
       {/* Logo */}
@@ -167,8 +168,11 @@ export function Nav() {
           padding: "0 18px",
           height: 34,
           borderRadius: 999,
-          background: "rgba(255,255,255,0.09)",
-          border: "1px solid rgba(255,255,255,0.14)",
+          background: "rgba(255,255,255,0.07)",
+          border: "1px solid rgba(255,255,255,0.13)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12)",
           cursor: "pointer",
           letterSpacing: "-0.005em",
           fontFamily: "Inter, system-ui, sans-serif",
@@ -176,7 +180,8 @@ export function Nav() {
           alignItems: "center",
           textDecoration: "none",
         }}
-        whileHover={{ background: "rgba(255,255,255,0.15)", borderColor: "rgba(255,255,255,0.22)" }}
+        whileHover={{ background: "rgba(255,255,255,0.13)", borderColor: "rgba(255,255,255,0.22)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18)" }}
+        whileTap={{ scale: 0.97 }}
         transition={{ duration: 0.18 }}
       >
         Hablar con el equipo
@@ -190,16 +195,21 @@ export function Nav() {
         variants={burgerVariants}
         aria-label={drawerOpen ? "Cerrar menú" : "Abrir menú"}
         aria-expanded={drawerOpen}
+        whileTap={{ scale: 0.92 }}
         style={{
           display: "none",
           alignItems: "center",
           justifyContent: "center",
-          background: "none",
-          border: "none",
+          background: "rgba(255,255,255,0.07)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          border: "1px solid rgba(255,255,255,0.10)",
+          borderRadius: 10,
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.10)",
           cursor: "pointer",
-          padding: 8,
-          width: 40,
-          height: 40,
+          padding: 0,
+          width: 38,
+          height: 38,
           color: "#fff",
           flexDirection: "column",
           gap: 5,
@@ -214,112 +224,171 @@ export function Nav() {
       <AnimatePresence>
         {drawerOpen && (
           <>
+            {/* Blurred backdrop — tap to close */}
             <motion.div
               key="overlay"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.25 }}
               onClick={() => setDrawerOpen(false)}
               style={{
                 position: "fixed",
                 inset: 0,
-                background: "rgba(0,0,0,0.5)",
+                background: "rgba(0,0,0,0.45)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
                 zIndex: 99,
               }}
             />
+
+            {/* Liquid Glass drawer panel */}
             <motion.div
               key="drawer"
               ref={drawerRef}
               role="dialog"
               aria-modal="true"
-              initial={{ x: 220 }}
-              animate={{ x: 0 }}
-              exit={{ x: 220 }}
-              transition={{ type: "spring", stiffness: 300, damping: 28 }}
+              initial={{ x: 280, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 280, opacity: 0 }}
+              transition={{ type: "spring", damping: 32, stiffness: 300, mass: 0.9 }}
               style={{
                 position: "fixed",
                 top: 0,
                 right: 0,
-                height: "100vh",
-                width: 220,
-                background: "#0d0d0d",
-                borderLeft: "1px solid rgba(255,255,255,0.08)",
-                padding: "24px 20px",
+                height: "100dvh",
+                width: 260,
+                background: "rgba(14,14,18,0.62)",
+                backdropFilter: "blur(40px) saturate(200%) brightness(1.12)",
+                WebkitBackdropFilter: "blur(40px) saturate(200%) brightness(1.12)",
+                borderLeft: "1px solid rgba(255,255,255,0.10)",
+                boxShadow: "inset 1px 0 0 rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.12), -20px 0 60px rgba(0,0,0,0.55)",
+                padding: "20px 20px 32px",
                 zIndex: 101,
                 display: "flex",
                 flexDirection: "column",
               }}
             >
-              {/* Close button */}
-              <button
-                onClick={() => setDrawerOpen(false)}
-                aria-label="Cerrar menú"
-                style={{
-                  alignSelf: "flex-end",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "rgba(255,255,255,0.5)",
-                  fontSize: 22,
-                  lineHeight: 1,
-                  padding: "4px 2px",
-                  marginBottom: 24,
-                  fontFamily: "Inter, system-ui, sans-serif",
-                }}
-              >
-                ×
-              </button>
+              {/* Top row: logo + close */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 40 }}>
+                <Link to="/" onClick={() => setDrawerOpen(false)} style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+                  <img src={LogoSvg} alt="Insights" height={22} style={{ height: 22, width: "auto", opacity: 0.9 }} />
+                </Link>
+                <motion.button
+                  onClick={() => setDrawerOpen(false)}
+                  aria-label="Cerrar menú"
+                  whileTap={{ scale: 0.88 }}
+                  style={{
+                    width: 32, height: 32, borderRadius: "50%",
+                    background: "rgba(255,255,255,0.07)",
+                    border: "1px solid rgba(255,255,255,0.10)",
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                    cursor: "pointer",
+                    color: "rgba(255,255,255,0.60)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12)",
+                  }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                  </svg>
+                </motion.button>
+              </div>
 
-              {/* Nav links */}
-              <nav style={{ display: "flex", flexDirection: "column" }}>
-                {links.map(({ id, label, path }) => (
-                  <Link
+              {/* Nav links — staggered */}
+              <nav style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
+                {links.map(({ id, label, path }, idx) => (
+                  <motion.div
                     key={id}
-                    to={path}
-                    aria-current={active === id ? "page" : undefined}
-                    onClick={() => setDrawerOpen(false)}
-                    style={{
-                      display: "block",
-                      padding: "14px 0",
-                      borderBottom: "1px solid rgba(255,255,255,0.06)",
-                      fontSize: 14,
-                      color: active === id ? "#fff" : "rgba(255,255,255,0.75)",
-                      textDecoration: "none",
-                      fontFamily: "Inter, system-ui, sans-serif",
-                      letterSpacing: "-0.005em",
-                    }}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.06 + 0.12, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    {label}
-                  </Link>
+                    <Link
+                      to={path}
+                      aria-current={active === id ? "page" : undefined}
+                      onClick={() => setDrawerOpen(false)}
+                      className="drawer-nav-link"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        padding: "13px 14px",
+                        borderRadius: 12,
+                        fontSize: 15,
+                        fontWeight: active === id ? 500 : 400,
+                        color: active === id ? "#fff" : "rgba(255,255,255,0.62)",
+                        textDecoration: "none",
+                        fontFamily: "Inter, system-ui, sans-serif",
+                        letterSpacing: "-0.01em",
+                        background: active === id ? "rgba(255,255,255,0.08)" : "transparent",
+                        border: active === id ? "1px solid rgba(255,255,255,0.10)" : "1px solid transparent",
+                        backdropFilter: active === id ? "blur(12px)" : "none",
+                        WebkitBackdropFilter: active === id ? "blur(12px)" : "none",
+                        boxShadow: active === id ? "inset 0 1px 0 rgba(255,255,255,0.10)" : "none",
+                        transition: "background 0.18s, color 0.18s, box-shadow 0.18s, border-color 0.18s",
+                      }}
+                      onMouseEnter={e => {
+                        if (active !== id) {
+                          e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                          e.currentTarget.style.color = "rgba(255,255,255,0.88)";
+                          e.currentTarget.style.boxShadow = "0 0 16px rgba(250,128,57,0.14), inset 0 1px 0 rgba(255,255,255,0.08)";
+                          e.currentTarget.style.borderColor = "rgba(250,128,57,0.18)";
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        if (active !== id) {
+                          e.currentTarget.style.background = "transparent";
+                          e.currentTarget.style.color = "rgba(255,255,255,0.62)";
+                          e.currentTarget.style.boxShadow = "none";
+                          e.currentTarget.style.borderColor = "transparent";
+                        }
+                      }}
+                    >
+                      {active === id && (
+                        <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#fa8039", flexShrink: 0 }} />
+                      )}
+                      {label}
+                    </Link>
+                  </motion.div>
                 ))}
               </nav>
 
-              {/* CTA button */}
-              <Link
-                to="/contacto"
-                onClick={() => setDrawerOpen(false)}
-                style={{
-                  marginTop: "auto",
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "#fff",
-                  padding: "0 18px",
-                  height: 40,
-                  borderRadius: 999,
-                  background: "rgba(255,255,255,0.09)",
-                  border: "1px solid rgba(255,255,255,0.14)",
-                  cursor: "pointer",
-                  letterSpacing: "-0.005em",
-                  fontFamily: "Inter, system-ui, sans-serif",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textDecoration: "none",
-                }}
+              {/* CTA button — bottom */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.32, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               >
-                Hablar con el equipo
-              </Link>
+                <Link
+                  to="/contacto"
+                  onClick={() => setDrawerOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    height: 46,
+                    borderRadius: 999,
+                    background: "linear-gradient(135deg, rgba(250,128,57,0.88) 0%, #fa8039 100%)",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    boxShadow: "0 8px 24px -4px rgba(250,128,57,0.40), inset 0 1px 0 rgba(255,255,255,0.22)",
+                    color: "#fff",
+                    fontSize: 13.5,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    letterSpacing: "-0.01em",
+                    fontFamily: "Inter, system-ui, sans-serif",
+                    textDecoration: "none",
+                  }}
+                >
+                  Hablar con el equipo
+                  <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </Link>
+              </motion.div>
             </motion.div>
           </>
         )}
@@ -467,11 +536,44 @@ function Hero() {
         </motion.p>
 
         <motion.div
-          style={{ display: "flex", justifyContent: "center", gap: 12 }}
+          style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.65 }}
         >
+          {/* Primary CTA — Agendá tu llamada */}
+          <MotionLink
+            to="/contacto/general"
+            className="hero-cta-primary"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              borderRadius: 999,
+              background: "linear-gradient(135deg, #f97a30 0%, #fa8039 50%, #fb9054 100%)",
+              color: "#fff",
+              fontSize: 14,
+              fontWeight: 600,
+              padding: "0 28px",
+              height: 48,
+              cursor: "pointer",
+              letterSpacing: "-0.01em",
+              fontFamily: "Inter, system-ui, sans-serif",
+              textDecoration: "none",
+              border: "1px solid rgba(255,255,255,0.18)",
+              boxShadow: "0 10px 32px -6px rgba(250,128,57,0.50), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.16)",
+            }}
+            whileHover={{ y: -1, boxShadow: "0 16px 40px -6px rgba(250,128,57,0.60), inset 0 1px 0 rgba(255,255,255,0.34), inset 0 -1px 0 rgba(0,0,0,0.16)" }}
+            whileTap={{ scale: 0.98, y: 0 }}
+            transition={{ duration: 0.18 }}
+          >
+            Agendá tu llamada
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </MotionLink>
+
+          {/* Secondary CTA — Ver proyectos */}
           <MotionLink
             to="/proyectos"
             style={{
@@ -479,10 +581,11 @@ function Hero() {
               alignItems: "center",
               gap: 10,
               borderRadius: 999,
-              background: "rgba(255,255,255,0.10)",
-              border: "1px solid rgba(255,255,255,0.16)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.13)",
+              backdropFilter: "blur(20px) saturate(180%)",
+              WebkitBackdropFilter: "blur(20px) saturate(180%)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.12)",
               color: "#fff",
               fontSize: 14,
               fontWeight: 500,
@@ -493,8 +596,9 @@ function Hero() {
               fontFamily: "Inter, system-ui, sans-serif",
               textDecoration: "none",
             }}
-            whileHover={{ background: "rgba(255,255,255,0.16)", borderColor: "rgba(255,255,255,0.24)" }}
-            transition={{ duration: 0.2 }}
+            whileHover={{ background: "rgba(255,255,255,0.12)", borderColor: "rgba(255,255,255,0.22)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.12)" }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.18 }}
           >
             Ver proyectos
             <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -789,6 +893,7 @@ function ProjectRow({ project, index }) {
             src={project.img}
             alt={project.title}
             loading="lazy"
+            decoding="async"
             animate={{ scale: hovered && !locked ? 1.06 : 1 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             style={{
@@ -796,7 +901,7 @@ function ProjectRow({ project, index }) {
               height: "100%",
               objectFit: "cover",
               display: "block",
-              filter: locked ? "grayscale(1) brightness(0.4)" : "none",
+              filter: locked ? "grayscale(1) brightness(0.4)" : undefined,
               transformOrigin: "center",
             }}
             onError={e => { e.target.style.display = "none"; }}
@@ -1059,8 +1164,11 @@ function ProcesoScreen() {
               alignItems: "center",
               gap: 10,
               borderRadius: 999,
-              background: "rgba(255,255,255,0.08)",
-              border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.13)",
+              backdropFilter: "blur(20px) saturate(180%)",
+              WebkitBackdropFilter: "blur(20px) saturate(180%)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.10)",
               color: "#fff",
               fontSize: 14,
               fontWeight: 500,
@@ -1070,8 +1178,9 @@ function ProcesoScreen() {
               fontFamily: "Inter, system-ui, sans-serif",
               textDecoration: "none",
             }}
-            whileHover={{ background: "rgba(255,255,255,0.14)" }}
-            transition={{ duration: 0.2 }}
+            whileHover={{ background: "rgba(255,255,255,0.12)", borderColor: "rgba(255,255,255,0.20)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.10)" }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.18 }}
           >
             Quiero agendar →
           </MotionLink>
@@ -1084,6 +1193,7 @@ function ProcesoScreen() {
 /* ─── Team Spotlight ─────────────────────────────────────────────────────── */
 function TeamSpotlight() {
   const [active, setActive] = useState(0);
+  const containerRef = useRef(null);
   const n = TEAM.length;
 
   // Circular offset: always in range [-floor(n/2), ceil(n/2)]
@@ -1097,21 +1207,23 @@ function TeamSpotlight() {
   const prev = () => setActive(i => (i - 1 + n) % n);
   const next = () => setActive(i => (i + 1) % n);
 
-  // Exact values reverse-engineered from reference (team-spotlight.framer.website)
-  const CARD_W = 280;
-  const CARD_H = 420; // ~3:4.5 portrait
+  // Responsive card dimensions — smaller on mobile
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 480;
+  const CARD_W = isMobile ? 200 : 280;
+  const CARD_H = isMobile ? 300 : 420;
 
   const getConfig = (offset) => {
     const abs = Math.abs(offset);
     const sign = offset === 0 ? 0 : offset > 0 ? 1 : -1;
-    if (abs === 0) return { x: 0,          scale: 1,   rotate: 0,        opacity: 1,   blur: 0, z: 5 };
-    if (abs === 1) return { x: sign * 130,  scale: 0.9, rotate: sign * 4, opacity: 0.9, blur: 2, z: 4 };
-    if (abs === 2) return { x: sign * 240,  scale: 0.8, rotate: sign * 4, opacity: 0.8, blur: 5, z: 3 };
-    return               { x: sign * 340,  scale: 0.7, rotate: sign * 6, opacity: 0,   blur: 8, z: 0 };
+    const xMult = isMobile ? 0.72 : 1;
+    if (abs === 0) return { x: 0,                    scale: 1,   rotate: 0,        opacity: 1,   blur: 0, z: 5 };
+    if (abs === 1) return { x: sign * 130 * xMult,   scale: 0.9, rotate: sign * 4, opacity: 0.9, blur: 2, z: 4 };
+    if (abs === 2) return { x: sign * 240 * xMult,   scale: 0.8, rotate: sign * 4, opacity: 0.8, blur: 5, z: 3 };
+    return               { x: sign * 340 * xMult,   scale: 0.7, rotate: sign * 6, opacity: 0,   blur: 8, z: 0 };
   };
 
   return (
-    <div style={{ userSelect: "none", marginBottom: 80 }}>
+    <div style={{ userSelect: "none", marginBottom: 80, overflow: "hidden" }}>
 
       {/* ── Glow behind carousel ───────────────────────── */}
       <div style={{
@@ -1119,6 +1231,7 @@ function TeamSpotlight() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        overflow: "hidden",
       }}>
         {/* Amber radial glow matching reference */}
         <div style={{
@@ -1126,7 +1239,7 @@ function TeamSpotlight() {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 600,
+          width: "min(600px, 140vw)",
           height: 400,
           borderRadius: "50%",
           background: "radial-gradient(ellipse at center, rgba(250,128,57,0.13) 0%, rgba(250,128,57,0.04) 45%, transparent 70%)",
@@ -1193,7 +1306,10 @@ function TeamSpotlight() {
                     objectPosition: "center top",
                     display: "block",
                     pointerEvents: "none",
+                    filter: "blur(12px)",
+                    transition: "filter 0.5s ease",
                   }}
+                  onLoad={e => { e.target.style.filter = "blur(0px)"; }}
                   onError={e => { e.target.style.display = "none"; }}
                 />
               </motion.div>
@@ -1319,9 +1435,9 @@ function TeamSpotlight() {
 export function NosotrosScreen() {
   return (
     <div style={{ paddingTop: 56, minHeight: "100vh" }}>
-      <div className="container-minta">
+      <div className="container-minta nosotros-container">
         {/* Intro */}
-        <div style={{ maxWidth: 600, marginBottom: 72 }}>
+        <div className="nosotros-intro" style={{ maxWidth: 600, marginBottom: 72 }}>
           <motion.div
             style={{ display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 20 }}
             initial={{ opacity: 0, y: 16 }}
@@ -1369,6 +1485,7 @@ export function NosotrosScreen() {
 
         {/* Stats bar */}
         <motion.div
+          className="nosotros-stats-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
@@ -1379,19 +1496,21 @@ export function NosotrosScreen() {
             marginBottom: 80,
           }}
           initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: "easeOut", delay: 0.4 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.65, ease: "easeOut" }}
         >
           {[
-            { num: "+10", label: "Proyectos entregados" },
-            { num: "+12",  label: "Sectores distintos" },
-            { num: "4",    label: "Especialistas dedicados" },
-            { num: "+3",   label: "Años en el mercado" },
+            { num: "+10", label: "Proyectos" },
+            { num: "+12",  label: "Sectores" },
+            { num: "4",    label: "Especialistas" },
+            { num: "+3",   label: "Años" },
           ].map((s, i) => (
             <div
               key={s.label}
+              className="nosotros-stat-cell"
               style={{
-                padding: "32px 24px",
+                padding: "24px 12px",
                 background: "#0d0d0d",
                 textAlign: "center",
                 borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
@@ -1401,7 +1520,7 @@ export function NosotrosScreen() {
                 style={{
                   fontFamily: '"Geist Mono", monospace',
                   fontFeatureSettings: "'zero' on, 'tnum' on",
-                  fontSize: "clamp(24px, 3vw, 36px)",
+                  fontSize: "clamp(20px, 5vw, 36px)",
                   fontWeight: 300,
                   letterSpacing: "-0.02em",
                   color: "#fff",
@@ -1410,7 +1529,7 @@ export function NosotrosScreen() {
               >
                 {s.num}
               </div>
-              <div style={{ fontSize: 13, color: "#8a8a8a", lineHeight: "1.3em" }}>
+              <div style={{ fontSize: "clamp(11px, 2.5vw, 13px)", color: "#8a8a8a", lineHeight: "1.3em" }}>
                 {s.label}
               </div>
             </div>
@@ -1419,6 +1538,7 @@ export function NosotrosScreen() {
 
         {/* Speaker section */}
         <motion.div
+          className="nosotros-speaker-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
@@ -1427,8 +1547,9 @@ export function NosotrosScreen() {
             marginBottom: 96,
           }}
           initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut", delay: 0.5 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
         >
           {/* Photo */}
           <div style={{ position: "relative" }}>
@@ -1446,7 +1567,15 @@ export function NosotrosScreen() {
                 height={450}
                 loading="lazy"
                 decoding="async"
-                style={{ width: "100%", display: "block", objectFit: "cover", aspectRatio: "4/3" }}
+                style={{
+                  width: "100%",
+                  display: "block",
+                  objectFit: "cover",
+                  aspectRatio: "4/3",
+                  filter: "blur(12px)",
+                  transition: "filter 0.5s ease",
+                }}
+                onLoad={e => { e.target.style.filter = "blur(0px)"; }}
                 onError={e => { e.target.parentElement.style.background = "#111"; e.target.style.display = "none"; }}
               />
             </div>
@@ -1515,13 +1644,15 @@ export function NosotrosScreen() {
           </div>
 
           <motion.div
+            className="nosotros-testimonials-grid"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))",
               gap: 12,
             }}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
             variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
           >
             {TESTIMONIALS.map(t => (
@@ -1571,8 +1702,9 @@ export function NosotrosScreen() {
         <motion.div
           style={{ textAlign: "center", paddingTop: 40, paddingBottom: 96 }}
           initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: "easeOut", delay: 0.6 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.65, ease: "easeOut" }}
         >
           <h2
             style={{
@@ -1598,19 +1730,21 @@ export function NosotrosScreen() {
               alignItems: "center",
               gap: 10,
               borderRadius: 999,
-              background: "rgba(255,255,255,0.09)",
-              border: "1px solid rgba(255,255,255,0.14)",
+              background: "linear-gradient(135deg, #f97a30 0%, #fa8039 50%, #fb9054 100%)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              boxShadow: "0 10px 32px -6px rgba(250,128,57,0.50), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.16)",
               color: "#fff",
               fontSize: 14,
-              fontWeight: 500,
+              fontWeight: 600,
               padding: "0 32px",
               height: 52,
               cursor: "pointer",
               fontFamily: "Inter, system-ui, sans-serif",
               textDecoration: "none",
             }}
-            whileHover={{ background: "rgba(255,255,255,0.15)", borderColor: "rgba(255,255,255,0.22)" }}
-            transition={{ duration: 0.2 }}
+            whileHover={{ y: -1, boxShadow: "0 16px 40px -6px rgba(250,128,57,0.60), inset 0 1px 0 rgba(255,255,255,0.34), inset 0 -1px 0 rgba(0,0,0,0.16)" }}
+            whileTap={{ scale: 0.98, y: 0 }}
+            transition={{ duration: 0.18 }}
           >
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>

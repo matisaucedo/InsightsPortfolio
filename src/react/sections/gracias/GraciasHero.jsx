@@ -6,28 +6,103 @@ import {
   useTransform,
 } from "framer-motion";
 
-const CHILD = {
-  hidden: { opacity: 0, y: 24 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-  },
-};
+const SPRING = (delay = 0) => ({
+  type: "spring",
+  damping: 70,
+  stiffness: 240,
+  mass: 1,
+  delay,
+});
 
-const CONTAINER = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } },
+// Badge slides from slightly above (y: -20)
+const EYEBROW = {
+  hidden: { opacity: 0, y: -20 },
+  show: { opacity: 1, y: 0, transition: SPRING(0.1) },
 };
+// H1, italic H2, subtitle, CTAs — standard y: 20 rise
+const ITEM = (delay) => ({
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: SPRING(delay) },
+});
 
 const VIDEO_VARIANT = {
   hidden: { opacity: 0, y: 40 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.25 },
-  },
+  show: { opacity: 1, y: 0, transition: SPRING(0.85) },
 };
+
+const CTA_STYLE = `
+.cta-editr {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  font-family: Inter, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  padding: 14px 24px;
+  border-radius: 12px;
+  transition:
+    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cta-editr__labels {
+  position: relative;
+  overflow: hidden;
+  height: 1em;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cta-editr__label {
+  display: block;
+  height: 1em;
+  line-height: 1em;
+  flex-shrink: 0;
+}
+.cta-editr:hover .cta-editr__labels {
+  transform: translateY(-100%);
+}
+/* Primary */
+.cta-primary {
+  background: #fff;
+  color: #0a0a0a;
+  box-shadow:
+    0 10px 30px -10px rgba(250,128,57,0.35),
+    0 4px 12px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.cta-primary:hover {
+  background: #fa8039;
+  color: #fff;
+}
+.cta-primary:focus-visible {
+  outline: 2px solid rgba(250,128,57,0.75);
+  outline-offset: 3px;
+}
+/* Secondary */
+.cta-secondary {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: none;
+}
+.cta-secondary:hover {
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.04);
+}
+.cta-secondary:focus-visible {
+  outline: 2px solid rgba(250,128,57,0.75);
+  outline-offset: 3px;
+}
+`;
 
 export default function GraciasHero() {
   const shouldReduce = useReducedMotion();
@@ -62,6 +137,8 @@ export default function GraciasHero() {
         alignItems: "center",
       }}
     >
+      <style>{CTA_STYLE}</style>
+
       {/* Accent glow blob */}
       <motion.div
         aria-hidden="true"
@@ -92,26 +169,23 @@ export default function GraciasHero() {
           padding: "128px 24px 96px",
         }}
       >
-        <div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
-        >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* ── LEFT: copy ──────────────────────────────────────────── */}
-          <motion.div
-            variants={CONTAINER}
-            initial={initial}
-            animate={animate}
-            style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
-          >
-            {/* Status badge */}
-            <motion.div variants={CHILD}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+            {/* Eyebrow — spring delay 0.1, y: -20 */}
+            <motion.div
+              variants={EYEBROW}
+              initial={initial}
+              animate={animate}
+            >
               <span
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "0.45rem",
                   fontFamily: "Inter, system-ui, sans-serif",
-                  fontSize: 11,
-                  fontWeight: 500,
+                  fontSize: 12,
+                  fontWeight: 700,
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
                   color: "#c2c2c2",
@@ -131,15 +205,19 @@ export default function GraciasHero() {
               </span>
             </motion.div>
 
-            {/* H1 display */}
-            <motion.div variants={CHILD}>
+            {/* H1 — spring delay 0.25, weight 400, letter-spacing -0.04em */}
+            <motion.div
+              variants={ITEM(0.25)}
+              initial={initial}
+              animate={animate}
+            >
               <h1
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontWeight: 500,
+                  fontWeight: 400,
                   fontSize: "clamp(44px, 7.5vw, 96px)",
-                  lineHeight: 0.95,
-                  letterSpacing: "-0.03em",
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.04em",
                   color: "#fff",
                   margin: 0,
                 }}
@@ -149,12 +227,16 @@ export default function GraciasHero() {
               </h1>
             </motion.div>
 
-            {/* H2 italic tail */}
-            <motion.div variants={CHILD}>
+            {/* Italic H2 — spring delay 0.4, weight 300 */}
+            <motion.div
+              variants={ITEM(0.4)}
+              initial={initial}
+              animate={animate}
+            >
               <p
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontWeight: 400,
+                  fontWeight: 300,
                   fontStyle: "italic",
                   fontSize: "clamp(32px, 5vw, 64px)",
                   lineHeight: 1.0,
@@ -167,12 +249,17 @@ export default function GraciasHero() {
               </p>
             </motion.div>
 
-            {/* Subtitle */}
-            <motion.div variants={CHILD}>
+            {/* Subtitle — spring delay 0.55, weight 400 */}
+            <motion.div
+              variants={ITEM(0.55)}
+              initial={initial}
+              animate={animate}
+            >
               <p
                 style={{
                   fontFamily: "Inter, system-ui, sans-serif",
                   fontSize: 16,
+                  fontWeight: 400,
                   lineHeight: 1.5,
                   color: "#c2c2c2",
                   maxWidth: 520,
@@ -185,72 +272,39 @@ export default function GraciasHero() {
               </p>
             </motion.div>
 
-            {/* CTAs */}
+            {/* CTAs — spring delay 0.7 */}
             <motion.div
-              variants={CHILD}
+              variants={ITEM(0.7)}
+              initial={initial}
+              animate={animate}
               style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}
             >
-              {/* Primary */}
+              {/* Primary — vertical label slide */}
               <button
                 onClick={handleScrollToBooking}
-                className="touch-manipulation"
-                style={{
-                  background: "#fff",
-                  color: "#0a0a0a",
-                  border: "none",
-                  borderRadius: 999,
-                  padding: "14px 28px",
-                  fontSize: 15,
-                  fontWeight: 600,
-                  fontFamily: "Inter, system-ui, sans-serif",
-                  cursor: "pointer",
-                  letterSpacing: "-0.01em",
-                  boxShadow:
-                    "0 1px 0 rgba(255,255,255,0.1) inset, 0 10px 30px -10px rgba(250,128,57,0.4)",
-                  transition: "transform 0.18s ease, opacity 0.18s ease",
-                  whiteSpace: "nowrap",
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
-                onFocus={(e) => { e.currentTarget.style.outline = "2px solid rgba(250,128,57,0.7)"; e.currentTarget.style.outlineOffset = "3px"; }}
-                onBlur={(e) => { e.currentTarget.style.outline = "none"; }}
+                className="cta-editr cta-primary touch-manipulation"
               >
-                Agendá tu llamada
+                <span className="cta-editr__labels">
+                  <span className="cta-editr__label">Agendá tu llamada</span>
+                  <span className="cta-editr__label" aria-hidden="true">Agendá tu llamada</span>
+                </span>
               </button>
 
-              {/* Secondary */}
+              {/* Secondary — vertical label slide + border brighten */}
               <button
                 onClick={handleToggleSound}
-                className="touch-manipulation"
-                style={{
-                  background: "transparent",
-                  color: "#fff",
-                  border: "1px solid rgba(255,255,255,0.14)",
-                  borderRadius: 999,
-                  padding: "14px 24px",
-                  fontSize: 15,
-                  fontWeight: 400,
-                  fontFamily: "Inter, system-ui, sans-serif",
-                  cursor: "pointer",
-                  letterSpacing: "-0.01em",
-                  transition: "border-color 0.18s ease, background 0.18s ease",
-                  whiteSpace: "nowrap",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.45rem",
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.32)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.14)"; e.currentTarget.style.background = "transparent"; }}
-                onFocus={(e) => { e.currentTarget.style.outline = "2px solid rgba(250,128,57,0.7)"; e.currentTarget.style.outlineOffset = "3px"; }}
-                onBlur={(e) => { e.currentTarget.style.outline = "none"; }}
+                className="cta-editr cta-secondary touch-manipulation"
               >
-                <span aria-hidden="true">▶</span>
-                Ver video
+                <span aria-hidden="true" style={{ fontSize: 12 }}>▶</span>
+                <span className="cta-editr__labels">
+                  <span className="cta-editr__label">Ver video</span>
+                  <span className="cta-editr__label" aria-hidden="true">Ver video</span>
+                </span>
               </button>
             </motion.div>
-          </motion.div>
+          </div>
 
-          {/* ── RIGHT: video card ────────────────────────────────────── */}
+          {/* ── RIGHT: video card — spring delay 0.85, y: 40 ───────── */}
           <motion.div
             variants={VIDEO_VARIANT}
             initial={initial}

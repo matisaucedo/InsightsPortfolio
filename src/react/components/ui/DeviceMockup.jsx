@@ -134,6 +134,8 @@ export default function DeviceMockup({
         src={FRAME_SRC}
         alt=""
         draggable={false}
+        loading="lazy"
+        decoding="async"
         style={{
           position: "absolute",
           inset: 0,

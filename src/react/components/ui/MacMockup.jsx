@@ -156,6 +156,8 @@ export default function MacMockup({
         src={FRAME_SRC}
         alt=""
         draggable={false}
+        loading="lazy"
+        decoding="async"
         style={{
           position: "absolute",
           left: `${FRAME_IMG_OFFSET_X * 100}%`,
