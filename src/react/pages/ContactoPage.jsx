@@ -4,8 +4,40 @@ import { motion, AnimatePresence } from "framer-motion";
 import GrainOverlay from "../components/ui/GrainOverlay.jsx";
 import { PROJECTS } from "../data/projects.js";
 
-// TODO: reemplazar con form ID real de Formspree creado por el user
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xblzjjow";
+
+const BUDGET_OPTIONS = [
+  {
+    value: "$6k — $8k USD",
+    label: "$6k — $8k USD",
+    sub: "Proyectos de alcance definido",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+      </svg>
+    ),
+  },
+  {
+    value: "$8k — $10k USD",
+    label: "$8k — $10k USD",
+    sub: "Producto con múltiples pantallas",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8M12 17v4" />
+      </svg>
+    ),
+  },
+  {
+    value: "$10k+ USD",
+    label: "$10k+ USD",
+    sub: "Plataforma completa, producto a medida",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    ),
+  },
+];
 
 const STEPS = [
   {
@@ -39,17 +71,17 @@ const STEPS = [
   {
     key: "presupuesto",
     title: "¿Cuál es tu presupuesto?",
-    subtitle: "Nos ayuda a dimensionar el alcance del proyecto.",
+    subtitle: "Nos ayuda a dimensionar el alcance.",
     type: "radio",
-    options: ["$6k — $8k USD", "$8k — $10k USD", "$10k+ USD"],
+    options: BUDGET_OPTIONS,
     validate: (v) => v ? null : "Seleccioná una opción",
   },
 ];
 
 const fadeSlide = {
-  hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.2, ease: [0.4, 0, 1, 1] } },
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.18, ease: [0.4, 0, 1, 1] } },
 };
 
 export default function ContactoPage() {
@@ -68,22 +100,13 @@ export default function ContactoPage() {
 
   function handleChange(val) {
     setData((d) => ({ ...d, [currentStep.key]: val }));
-    if (errors[currentStep.key]) {
-      setErrors((e) => ({ ...e, [currentStep.key]: null }));
-    }
+    if (errors[currentStep.key]) setErrors((e) => ({ ...e, [currentStep.key]: null }));
   }
 
   function handleNext() {
     const err = currentStep.validate(currentValue);
-    if (err) {
-      setErrors((e) => ({ ...e, [currentStep.key]: err }));
-      return;
-    }
-    if (step < STEPS.length - 1) {
-      setStep((s) => s + 1);
-    } else {
-      handleSubmit();
-    }
+    if (err) { setErrors((e) => ({ ...e, [currentStep.key]: err })); return; }
+    if (step < STEPS.length - 1) { setStep((s) => s + 1); } else { handleSubmit(); }
   }
 
   function handleBack() {
@@ -124,19 +147,30 @@ export default function ContactoPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#000",
+        background: "#0a0a0c",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "80px 20px 40px",
+        padding: "72px 20px 48px",
         position: "relative",
       }}
     >
       <GrainOverlay />
 
+      {/* Radial orange glow behind card */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "radial-gradient(ellipse 70% 50% at 50% 55%, rgba(250,128,57,0.12), transparent 65%)",
+          pointerEvents: "none",
+        }}
+      />
+
       {/* Back to home */}
-      <div style={{ position: "absolute", top: 24, left: 24 }}>
+      <div style={{ position: "absolute", top: 24, left: 24, zIndex: 2 }}>
         <Link
           to="/"
           style={{
@@ -148,6 +182,7 @@ export default function ContactoPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
+            transition: "color 0.18s",
           }}
           onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
           onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}
@@ -163,41 +198,47 @@ export default function ContactoPage() {
       <div
         style={{
           width: "100%",
-          maxWidth: 560,
-          background: "rgba(16,16,18,0.6)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: 24,
-          padding: "clamp(32px, 6vw, 56px)",
+          maxWidth: 460,
+          background: "rgba(24,24,28,0.75)",
+          backdropFilter: "blur(24px) saturate(1.2)",
+          WebkitBackdropFilter: "blur(24px) saturate(1.2)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          borderRadius: 16,
+          padding: "clamp(24px, 4vw, 32px)",
           position: "relative",
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04), 0 24px 64px rgba(0,0,0,0.5)",
         }}
       >
-        {/* Project context badge */}
+        {/* Project context pill */}
         {project && (
           <div
             style={{
-              fontSize: 12,
-              color: "rgba(250,128,57,0.8)",
+              fontSize: 11,
+              color: "rgba(250,128,57,0.85)",
               fontFamily: "Inter, system-ui, sans-serif",
-              letterSpacing: "0.06em",
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
               fontWeight: 500,
-              marginBottom: 20,
+              marginBottom: 16,
               background: "rgba(250,128,57,0.08)",
               border: "1px solid rgba(250,128,57,0.18)",
-              borderRadius: 8,
-              padding: "6px 12px",
+              borderRadius: 999,
+              padding: "4px 10px",
               display: "inline-block",
             }}
           >
-            Contactando sobre: {project.name}
+            {project.name}
           </div>
         )}
 
-        {/* Progress dots */}
+        {/* Progress dots + step label row */}
         <div
-          style={{ display: "flex", gap: 8, marginBottom: 36 }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            marginBottom: 20,
+          }}
           role="progressbar"
           aria-valuenow={step + 1}
           aria-valuemin={1}
@@ -207,14 +248,27 @@ export default function ContactoPage() {
             <div
               key={i}
               style={{
-                width: i === step ? 24 : 8,
-                height: 8,
+                width: i === step ? 20 : 5,
+                height: 5,
                 borderRadius: 999,
-                background: i === step ? "#fa8039" : i < step ? "rgba(250,128,57,0.4)" : "rgba(255,255,255,0.15)",
+                background: i === step ? "#fa8039" : i < step ? "rgba(250,128,57,0.35)" : "rgba(255,255,255,0.12)",
                 transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
+                flexShrink: 0,
               }}
             />
           ))}
+          <span
+            style={{
+              marginLeft: 6,
+              fontSize: 11,
+              color: "rgba(255,255,255,0.3)",
+              fontFamily: "Inter, system-ui, sans-serif",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
+            {step + 1} / {STEPS.length}
+          </span>
         </div>
 
         {/* Step content */}
@@ -226,37 +280,39 @@ export default function ContactoPage() {
             animate="visible"
             exit="exit"
           >
-            <h1
+            {/* Title inside card */}
+            <h2
               style={{
-                fontFamily: "var(--font-display, 'Cormorant Garamond', Georgia, serif)",
-                fontSize: "clamp(26px, 3.5vw, 36px)",
-                fontWeight: 400,
-                letterSpacing: "-0.03em",
+                fontFamily: "Inter, system-ui, sans-serif",
+                fontSize: "clamp(17px, 2.2vw, 20px)",
+                fontWeight: 600,
+                letterSpacing: "-0.02em",
                 color: "#fff",
-                lineHeight: 1.15,
-                margin: "0 0 8px",
+                lineHeight: 1.3,
+                margin: "0 0 6px",
               }}
             >
               {currentStep.title}
-            </h1>
+            </h2>
 
-            {currentStep.subtitle && (
+            {currentStep.subtitle ? (
               <p
                 style={{
-                  fontSize: 14,
-                  color: "rgba(255,255,255,0.5)",
+                  fontSize: 13,
+                  color: "rgba(255,255,255,0.45)",
                   lineHeight: 1.5,
-                  margin: "0 0 28px",
+                  margin: "0 0 20px",
                   fontFamily: "Inter, system-ui, sans-serif",
                 }}
               >
                 {currentStep.subtitle}
               </p>
+            ) : (
+              <div style={{ marginBottom: 20 }} />
             )}
-            {!currentStep.subtitle && <div style={{ marginBottom: 28 }} />}
 
-            {/* Input / Textarea */}
-            {currentStep.type === "text" || currentStep.type === "email" ? (
+            {/* Text / email input */}
+            {(currentStep.type === "text" || currentStep.type === "email") && (
               <div>
                 <label
                   htmlFor={`field-${currentStep.key}`}
@@ -275,21 +331,21 @@ export default function ContactoPage() {
                   autoFocus
                   style={{
                     width: "100%",
-                    height: 52,
-                    padding: "0 18px",
+                    height: 46,
+                    padding: "0 16px",
                     background: "rgba(255,255,255,0.04)",
                     border: `1px solid ${err ? "rgba(255,80,80,0.5)" : "rgba(255,255,255,0.08)"}`,
-                    borderRadius: 12,
+                    borderRadius: 10,
                     color: "#fff",
-                    fontSize: 15,
+                    fontSize: 14,
                     fontFamily: "Inter, system-ui, sans-serif",
                     outline: "none",
                     boxSizing: "border-box",
                     transition: "border-color 0.2s, box-shadow 0.2s",
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = "rgba(250,128,57,0.55)";
-                    e.target.style.boxShadow = "0 0 0 3px rgba(250,128,57,0.12)";
+                    e.target.style.borderColor = "rgba(250,128,57,0.5)";
+                    e.target.style.boxShadow = "0 0 0 3px rgba(250,128,57,0.10)";
                   }}
                   onBlur={(e) => {
                     if (!err) {
@@ -298,12 +354,12 @@ export default function ContactoPage() {
                     }
                   }}
                 />
-                <style>{`
-                  input::placeholder { color: rgba(255,255,255,0.32); }
-                  textarea::placeholder { color: rgba(255,255,255,0.32); }
-                `}</style>
+                <style>{`input::placeholder{color:rgba(255,255,255,0.3)}textarea::placeholder{color:rgba(255,255,255,0.3)}`}</style>
               </div>
-            ) : currentStep.type === "textarea" ? (
+            )}
+
+            {/* Textarea */}
+            {currentStep.type === "textarea" && (
               <div style={{ position: "relative" }}>
                 <label
                   htmlFor={`field-${currentStep.key}`}
@@ -321,13 +377,13 @@ export default function ContactoPage() {
                   maxLength={1000}
                   style={{
                     width: "100%",
-                    minHeight: 140,
-                    padding: "14px 18px",
+                    minHeight: 120,
+                    padding: "12px 16px",
                     background: "rgba(255,255,255,0.04)",
                     border: `1px solid ${err ? "rgba(255,80,80,0.5)" : "rgba(255,255,255,0.08)"}`,
-                    borderRadius: 12,
+                    borderRadius: 10,
                     color: "#fff",
-                    fontSize: 15,
+                    fontSize: 14,
                     fontFamily: "Inter, system-ui, sans-serif",
                     outline: "none",
                     resize: "vertical",
@@ -336,8 +392,8 @@ export default function ContactoPage() {
                     transition: "border-color 0.2s, box-shadow 0.2s",
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = "rgba(250,128,57,0.55)";
-                    e.target.style.boxShadow = "0 0 0 3px rgba(250,128,57,0.12)";
+                    e.target.style.borderColor = "rgba(250,128,57,0.5)";
+                    e.target.style.boxShadow = "0 0 0 3px rgba(250,128,57,0.10)";
                   }}
                   onBlur={(e) => {
                     if (!err) {
@@ -350,9 +406,9 @@ export default function ContactoPage() {
                   style={{
                     position: "absolute",
                     bottom: 10,
-                    right: 14,
+                    right: 12,
                     fontSize: 11,
-                    color: currentValue.length > 900 ? "rgba(250,128,57,0.7)" : "rgba(255,255,255,0.25)",
+                    color: currentValue.length > 900 ? "rgba(250,128,57,0.7)" : "rgba(255,255,255,0.22)",
                     fontFamily: "Inter, system-ui, sans-serif",
                     pointerEvents: "none",
                   }}
@@ -360,52 +416,92 @@ export default function ContactoPage() {
                   {currentValue.length}/1000
                 </span>
               </div>
-            ) : (
-              /* Radio options */
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            )}
+
+            {/* Radio — budget rows with icon */}
+            {currentStep.type === "radio" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {currentStep.options.map((opt) => {
-                  const selected = currentValue === opt;
+                  const selected = currentValue === opt.value;
                   return (
                     <button
-                      key={opt}
+                      key={opt.value}
                       type="button"
-                      onClick={() => handleChange(opt)}
+                      onClick={() => handleChange(opt.value)}
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
-                        height: 64,
-                        padding: "0 20px",
-                        background: selected ? "rgba(250,128,57,0.08)" : "rgba(255,255,255,0.02)",
-                        border: `1px solid ${selected ? "rgba(250,128,57,0.55)" : "rgba(255,255,255,0.08)"}`,
-                        borderRadius: 14,
-                        color: selected ? "#fff" : "rgba(255,255,255,0.75)",
-                        fontSize: 15,
-                        fontFamily: "Inter, system-ui, sans-serif",
-                        fontWeight: selected ? 500 : 400,
+                        gap: 12,
+                        padding: "12px 16px",
+                        background: selected ? "rgba(250,128,57,0.07)" : "rgba(255,255,255,0.025)",
+                        border: `1px solid ${selected ? "rgba(250,128,57,0.4)" : "rgba(255,255,255,0.07)"}`,
+                        borderRadius: 10,
+                        color: "#fff",
                         cursor: "pointer",
                         textAlign: "left",
                         transition: "all 0.18s ease",
                         outline: "none",
                       }}
                       onMouseEnter={(e) => {
-                        if (!selected) e.currentTarget.style.borderColor = "rgba(250,128,57,0.35)";
+                        if (!selected) e.currentTarget.style.borderColor = "rgba(250,128,57,0.28)";
                       }}
                       onMouseLeave={(e) => {
-                        if (!selected) e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                        if (!selected) e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)";
                       }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.boxShadow = "0 0 0 3px rgba(250,128,57,0.12)";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.boxShadow = "none";
-                      }}
+                      onFocus={(e) => { e.currentTarget.style.boxShadow = "0 0 0 3px rgba(250,128,57,0.10)"; }}
+                      onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
                       role="radio"
                       aria-checked={selected}
                     >
-                      {opt}
+                      {/* Icon circle */}
+                      <div
+                        style={{
+                          width: 34,
+                          height: 34,
+                          borderRadius: "50%",
+                          background: selected ? "rgba(250,128,57,0.15)" : "rgba(255,255,255,0.05)",
+                          border: `1px solid ${selected ? "rgba(250,128,57,0.3)" : "rgba(255,255,255,0.08)"}`,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                          color: selected ? "#fa8039" : "rgba(255,255,255,0.45)",
+                          transition: "all 0.18s ease",
+                        }}
+                      >
+                        {opt.icon}
+                      </div>
+
+                      {/* Labels */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: selected ? 600 : 400,
+                            color: selected ? "#fff" : "rgba(255,255,255,0.8)",
+                            fontFamily: "Inter, system-ui, sans-serif",
+                            letterSpacing: "-0.01em",
+                            lineHeight: 1.3,
+                          }}
+                        >
+                          {opt.label}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            color: "rgba(255,255,255,0.38)",
+                            fontFamily: "Inter, system-ui, sans-serif",
+                            marginTop: 2,
+                            lineHeight: 1.3,
+                          }}
+                        >
+                          {opt.sub}
+                        </div>
+                      </div>
+
+                      {/* Check */}
                       {selected && (
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fa8039" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fa8039" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       )}
@@ -415,32 +511,14 @@ export default function ContactoPage() {
               </div>
             )}
 
-            {/* Validation error */}
+            {/* Errors */}
             {err && (
-              <p
-                role="alert"
-                style={{
-                  fontSize: 13,
-                  color: "rgba(255,80,80,0.9)",
-                  marginTop: 8,
-                  fontFamily: "Inter, system-ui, sans-serif",
-                }}
-              >
+              <p role="alert" style={{ fontSize: 12, color: "rgba(255,80,80,0.9)", marginTop: 8, fontFamily: "Inter, system-ui, sans-serif" }}>
                 {err}
               </p>
             )}
-
-            {/* Submit error */}
             {submitError && (
-              <p
-                role="alert"
-                style={{
-                  fontSize: 13,
-                  color: "rgba(255,80,80,0.9)",
-                  marginTop: 12,
-                  fontFamily: "Inter, system-ui, sans-serif",
-                }}
-              >
+              <p role="alert" style={{ fontSize: 12, color: "rgba(255,80,80,0.9)", marginTop: 10, fontFamily: "Inter, system-ui, sans-serif" }}>
                 {submitError}
               </p>
             )}
@@ -451,8 +529,8 @@ export default function ContactoPage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: step > 0 ? "space-between" : "flex-end",
-                marginTop: 32,
-                gap: 16,
+                marginTop: 24,
+                gap: 12,
               }}
             >
               {step > 0 && (
@@ -462,19 +540,25 @@ export default function ContactoPage() {
                   style={{
                     background: "none",
                     border: "none",
-                    color: "rgba(255,255,255,0.5)",
-                    fontSize: 14,
+                    color: "rgba(255,255,255,0.4)",
+                    fontSize: 13,
                     fontFamily: "Inter, system-ui, sans-serif",
                     cursor: "pointer",
                     padding: 0,
                     transition: "color 0.18s",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 5,
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}
                   onFocus={(e) => (e.currentTarget.style.color = "#fff")}
-                  onBlur={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+                  onBlur={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}
                 >
-                  ← Atrás
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M19 12H5M12 5l-7 7 7 7" />
+                  </svg>
+                  Atrás
                 </button>
               )}
 
@@ -483,27 +567,37 @@ export default function ContactoPage() {
                 onClick={handleNext}
                 disabled={submitting}
                 style={{
-                  height: 52,
-                  padding: "0 28px",
+                  height: 44,
+                  padding: "0 22px",
                   borderRadius: 999,
                   background: submitting ? "rgba(255,255,255,0.08)" : "#fa8039",
                   color: submitting ? "rgba(255,255,255,0.3)" : "#000",
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: 500,
                   fontFamily: "Inter, system-ui, sans-serif",
                   border: "none",
                   cursor: submitting ? "not-allowed" : "pointer",
-                  transition: "background 0.2s",
+                  transition: "background 0.2s, transform 0.15s",
                   letterSpacing: "-0.005em",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
                 }}
                 onMouseEnter={(e) => {
-                  if (!submitting) e.currentTarget.style.background = "#ff9045";
+                  if (!submitting) { e.currentTarget.style.background = "#ff9045"; e.currentTarget.style.transform = "translateY(-1px)"; }
                 }}
                 onMouseLeave={(e) => {
-                  if (!submitting) e.currentTarget.style.background = "#fa8039";
+                  if (!submitting) { e.currentTarget.style.background = "#fa8039"; e.currentTarget.style.transform = "translateY(0)"; }
                 }}
               >
-                {submitting ? "Enviando…" : isLast ? "Enviar" : "Continuar →"}
+                {submitting ? "Enviando…" : isLast ? "Enviar" : (
+                  <>
+                    Continuar
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </>
+                )}
               </button>
             </div>
           </motion.div>
