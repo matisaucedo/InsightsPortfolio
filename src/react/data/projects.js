@@ -218,8 +218,8 @@ export const PROJECTS = [
     img: "/assets/images/kbsite_hero.png",
     mockup: {
       device: "split",
-      macSrc: "http://localhost:5175",
-      iphoneSrc: "http://localhost:5175",
+      macSrc: "https://insights-keyboard-site.onrender.com",
+      iphoneSrc: "https://insights-keyboard-site.onrender.com",
       macLabel: "Landing",
       iphoneLabel: "Mobile",
     },

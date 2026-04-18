@@ -25,13 +25,14 @@ function App() {
       touchMultiplier: 1.5,
     });
     window.lenis = lenis;
+    let rafId;
     function raf(time) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-    const id = requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
     return () => {
-      cancelAnimationFrame(id);
+      cancelAnimationFrame(rafId);
       lenis.destroy();
       window.lenis = null;
     };
@@ -69,6 +70,10 @@ function App() {
     </div>
     </MotionConfig>
   );
+}
+
+if (typeof window !== "undefined") {
+  window.history.scrollRestoration = "manual";
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
