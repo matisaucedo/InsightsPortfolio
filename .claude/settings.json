@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -L \"https://prod.spline.design/Lt7pjAVMtB8gHfLX/scene.splinecode\" -o \"/Users/matiassaucedo/Documents/Insights/1. Scrapping/portfolio/assets/trucktrack.splinecode\" --progress-bar)",
+      "Bash(curl -L \"https://prod.spline.design/Lt7pjAVMtB8gHfLX/scene.splinecode\" -o \"/Users/matiassaucedo/Documents/Insights/1. Scrapping/portfolio/assets/corpex.splinecode\" --progress-bar)",
+      "Bash(ls -lh \"/Users/matiassaucedo/Documents/Insights/1. Scrapping/portfolio/assets/\"*.splinecode)",
+      "Bash(curl -L -o donor.splinecode \"https://prod.spline.design/Lt7pjAVMtB8gHfLX/scene.splinecode\" --silent --show-error)",
+      "Bash(curl -s \"https://my.spline.design/browsermockupwithfloatingcomponents-HivXm9TYVMXGoCVbr40jSgfW/\")",
+      "Bash(curl -L -o clarity_test.splinecode \"https://prod.spline.design/HivXm9TYVMXGoCVbr40jSgfW/scene.splinecode\" --silent --show-error -w \"%{http_code}\")"
+    ]
+  }
+}
