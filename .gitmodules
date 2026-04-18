@@ -1,18 +1,12 @@
-[submodule "sites/keyboard-site"]
-	path = sites/keyboard-site
-	url = https://github.com/matisaucedo/keyboard-site
 [submodule "sites/forza-gym"]
 	path = sites/forza-gym
 	url = https://github.com/matisaucedo/forza-gym
-[submodule "sites/donortrack-landing"]
-	path = sites/donortrack-landing
-	url = https://github.com/matisaucedo/donortrack-landing
 [submodule "sites/clarity-business"]
 	path = sites/clarity-business
 	url = https://github.com/matisaucedo/clarity-business
-[submodule "sites/wirth-web"]
-	path = sites/wirth-web
-	url = https://github.com/matisaucedo/wirth-web
-[submodule "sites/wirth-demo"]
-	path = sites/wirth-demo
-	url = https://github.com/matisaucedo/wirth-demo
+[submodule "sites/donortrack"]
+	path = sites/donortrack
+	url = https://github.com/matisaucedo/donortrack-landing
+[submodule "sites/insights-hardware"]
+	path = sites/insights-hardware
+	url = https://github.com/matisaucedo/keyboard-site
