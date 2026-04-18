@@ -323,7 +323,7 @@ export default function GraciasHero() {
             >
               <video
                 ref={videoRef}
-                src="/assets/gracias-hero.mp4"
+                src="https://res.cloudinary.com/dwtx0m3tx/video/upload/v1776530148/insights/gracias-hero.mp4"
                 loop
                 playsInline
                 style={{
