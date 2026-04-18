@@ -143,7 +143,8 @@ export default function GraciasHero() {
         background: "#0a0a0a",
         minHeight: "100svh",
         display: "flex",
-        alignItems: "center",
+        flexDirection: "column",
+        justifyContent: "center",
       }}
     >
       <style>{CTA_STYLE}</style>
@@ -175,10 +176,10 @@ export default function GraciasHero() {
           width: "100%",
           maxWidth: 1200,
           margin: "0 auto",
-          padding: "128px 24px 96px",
+          padding: "clamp(80px,10vw,120px) clamp(24px,5vw,80px) clamp(60px,8vw,96px)",
         }}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="gracias-hero-grid">
           {/* ── LEFT: copy ──────────────────────────────────────────── */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
             {/* Eyebrow — spring delay 0.1, y: -20 */}
@@ -224,7 +225,7 @@ export default function GraciasHero() {
                 style={{
                   fontFamily: "var(--font-display)",
                   fontWeight: 400,
-                  fontSize: "clamp(44px, 7.5vw, 96px)",
+                  fontSize: "clamp(40px, 5vw, 64px)",
                   lineHeight: 1.05,
                   letterSpacing: "-0.04em",
                   color: "#fff",
@@ -247,7 +248,7 @@ export default function GraciasHero() {
                   fontFamily: "var(--font-display)",
                   fontWeight: 300,
                   fontStyle: "italic",
-                  fontSize: "clamp(32px, 5vw, 64px)",
+                  fontSize: "clamp(26px, 3.5vw, 46px)",
                   lineHeight: 1.0,
                   letterSpacing: "-0.02em",
                   color: "#fff",

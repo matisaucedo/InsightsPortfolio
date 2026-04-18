@@ -314,3 +314,17 @@
     box-shadow: 0 0 16px rgba(250,128,57,0.18), inset 0 1px 0 rgba(255,255,255,0.08) !important;
   }
 }
+
+/* ── Gracias page — hero grid responsive ─────────────────────────────────── */
+.gracias-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .gracias-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
