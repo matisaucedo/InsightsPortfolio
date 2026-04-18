@@ -4,7 +4,78 @@ import { motion, AnimatePresence } from "framer-motion";
 import GrainOverlay from "../components/ui/GrainOverlay.jsx";
 import { PROJECTS } from "../data/projects.js";
 
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/xblzjjow";
+/* ─────────────────────────────────────────────────────────────────────────
+ * BACKEND HANDOFF — leer esto antes de tocar el form
+ * ─────────────────────────────────────────────────────────────────────────
+ * La UI está 100% terminada (4-step wizard con validación, animaciones,
+ * estados de error y loading). Lo ÚNICO que falta es el POST real al
+ * backend. El flujo actual es stub:
+ *
+ *   1. Usuario completa los 4 steps.
+ *   2. Clickea "Enviar" → se llama a submitContactoForm(payload) (abajo).
+ *   3. El stub actualmente guarda el payload en sessionStorage, hace un
+ *      console.log y resuelve inmediatamente. Luego el wizard navega a
+ *      /gracias.
+ *
+ * Para wirear el backend real:
+ *   - Reemplazar el cuerpo de submitContactoForm() con el fetch definitivo.
+ *   - Respetar el contrato: si resuelve OK → navega a /gracias. Si rechaza
+ *     con Error(msg) → muestra msg en el form y queda en el último step.
+ *   - Shape del payload está documentado en el JSDoc de la función.
+ *   - Timeout recomendado: 10s (ver AbortController).
+ *   - Endpoint sugerido: POST /api/contacto (Render web_service expose o
+ *     edge function). CORS ya está OK porque el portfolio es mismo origen.
+ *
+ * Referencia (endpoint Formspree previo, ya deprecado): xblzjjow
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Envía el payload del form al backend.
+ * @param {{
+ *   nombre: string,         // min 2 chars
+ *   email: string,          // validado con regex básica
+ *   idea: string,           // 20–1000 chars
+ *   presupuesto: string,    // uno de BUDGET_OPTIONS[].value
+ *   proyecto: string,       // id del proyecto o "general"
+ *   meta: { submittedAt: string, userAgent: string, referrer: string }
+ * }} payload
+ * @returns {Promise<void>}  resolver = éxito · rejectar con Error(msg) = fallo
+ */
+async function submitContactoForm(payload) {
+  // ── STUB (sin backend) ────────────────────────────────────────────────
+  // Guardo el payload para que el backend dev pueda inspeccionarlo en
+  // DevTools y para que /gracias pueda mostrar "Gracias {nombre}" si quiere.
+  try {
+    sessionStorage.setItem("insights_last_contacto_submission", JSON.stringify(payload));
+  } catch { /* sessionStorage puede estar bloqueado, no importa */ }
+  if (import.meta.env.DEV) {
+    // Payload visible para el backend dev cuando haga QA.
+    // eslint-disable-next-line no-console
+    console.info("[ContactoPage] submitContactoForm payload:", payload);
+  }
+  // Ficción de latencia para que el botón "Enviando…" no parpadee.
+  await new Promise((r) => setTimeout(r, 400));
+  return; // ← el backend dev reemplaza TODO lo de arriba por un fetch real.
+
+  // ── CUANDO EL BACKEND EXISTA, usar algo así: ─────────────────────────
+  //
+  // const controller = new AbortController();
+  // const timeout = setTimeout(() => controller.abort(), 10_000);
+  // try {
+  //   const res = await fetch("/api/contacto", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json", Accept: "application/json" },
+  //     body: JSON.stringify(payload),
+  //     signal: controller.signal,
+  //   });
+  //   if (!res.ok) {
+  //     const data = await res.json().catch(() => ({}));
+  //     throw new Error(data.message || "No pudimos enviar tu mensaje. Probá de nuevo.");
+  //   }
+  // } finally {
+  //   clearTimeout(timeout);
+  // }
+}
 
 const BUDGET_OPTIONS = [
   {
@@ -117,21 +188,21 @@ export default function ContactoPage() {
     setSubmitting(true);
     setSubmitError(null);
     try {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          nombre: data.nombre,
-          email: data.email,
-          idea: data.idea,
-          presupuesto: data.presupuesto,
-          proyecto: projectId || "general",
-        }),
+      await submitContactoForm({
+        nombre: data.nombre.trim(),
+        email: data.email.trim(),
+        idea: data.idea.trim(),
+        presupuesto: data.presupuesto,
+        proyecto: projectId || "general",
+        meta: {
+          submittedAt: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          referrer: document.referrer || "",
+        },
       });
-      if (!res.ok) throw new Error("Error al enviar");
       navigate("/gracias");
-    } catch {
-      setSubmitError("Algo salió mal. Intentá de nuevo.");
+    } catch (e) {
+      setSubmitError(e?.message || "Algo salió mal. Intentá de nuevo.");
       setSubmitting(false);
     }
   }
