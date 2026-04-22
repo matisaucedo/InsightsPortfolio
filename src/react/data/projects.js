@@ -241,7 +241,7 @@ export const PROJECTS = [
     mockup: {
       device: "split",
       macSrc: "https://libratrack-lnb7.onrender.com/",
-      iphoneSrc: "https://libratrack-lnb7.onrender.com/app",
+      iphoneSrc: "https://libratrack-lnb7.onrender.com/#/app",
       macLabel: "Panel Bibliotecario",
       iphoneLabel: "App Socios",
     },
