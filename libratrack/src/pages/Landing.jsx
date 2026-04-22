@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 
 const EASE  = [0.22, 1, 0.36, 1]
 const EASEI = [0.4, 0, 0.2, 1]
-const WA    = 'https://wa.me/5491165050505?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20sobre%20LibraTrack'
 
 function scrollTo(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -266,10 +265,164 @@ const PLANS = [
   },
 ]
 
+// ── Payment Modal ─────────────────────────────────────────────────────────────
+function PaymentModal({ plan, onClose }) {
+  const [step, setStep]       = useState('form')   // 'form' | 'processing' | 'success'
+  const [card, setCard]       = useState({ number: '', expiry: '', cvv: '', name: '' })
+  const [errors, setErrors]   = useState({})
+
+  function fmt(field, val) {
+    if (field === 'number')  return val.replace(/\D/g,'').slice(0,16).replace(/(.{4})/g,'$1 ').trim()
+    if (field === 'expiry')  return val.replace(/\D/g,'').slice(0,4).replace(/^(.{2})(.+)/,'$1/$2')
+    if (field === 'cvv')     return val.replace(/\D/g,'').slice(0,4)
+    return val
+  }
+
+  function validate() {
+    const e = {}
+    if (card.number.replace(/\s/g,'').length < 16) e.number = 'Número inválido'
+    if (card.expiry.length < 5) e.expiry = 'Fecha inválida'
+    if (card.cvv.length < 3)    e.cvv    = 'CVV inválido'
+    if (!card.name.trim())      e.name   = 'Ingresá tu nombre'
+    setErrors(e)
+    return !Object.keys(e).length
+  }
+
+  function submit(ev) {
+    ev.preventDefault()
+    if (!validate()) return
+    setStep('processing')
+    setTimeout(() => setStep('success'), 2200)
+  }
+
+  const isFree = plan?.price === 'Gratis'
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        key="overlay"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        onClick={onClose}
+        style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(6px)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+      >
+        <motion.div
+          key="modal"
+          initial={{ opacity: 0, y: 24, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12, scale: 0.97 }}
+          transition={{ duration: 0.32, ease: EASE }}
+          onClick={e => e.stopPropagation()}
+          style={{ width: '100%', maxWidth: 440, background: '#13151c', border: '1px solid rgba(255,255,255,0.09)', borderRadius: 20, overflow: 'hidden', position: 'relative' }}
+        >
+          {/* Header */}
+          <div style={{ padding: '24px 28px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.06)', border: 'none', borderRadius: '50%', width: 30, height: 30, cursor: 'pointer', color: 'rgba(255,255,255,0.50)', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+            <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#34D399', fontWeight: 600, marginBottom: 4 }}>LibraTrack {plan?.name}</div>
+            <div style={{ fontSize: 28, fontWeight: 300, letterSpacing: '-0.04em', color: '#fff' }}>{plan?.price}{plan?.period && <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.35)' }}>{plan?.period}</span>}</div>
+          </div>
+
+          {/* Body */}
+          <div style={{ padding: 28 }}>
+            {step === 'form' && (
+              isFree ? (
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'rgba(52,211,153,0.10)', border: '1px solid rgba(52,211,153,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
+                  <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, marginBottom: 24, lineHeight: '1.6em' }}>Creá tu cuenta gratuita y accedé al instante. No se requiere tarjeta de crédito.</p>
+                  <motion.button whileHover={{ background: '#10b981' }} onClick={() => setStep('success')} style={{ width: '100%', padding: '14px', background: '#34D399', border: 'none', borderRadius: 12, color: '#0d0e12', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                    Crear cuenta gratis →
+                  </motion.button>
+                </div>
+              ) : (
+                <form onSubmit={submit}>
+                  {/* Card number */}
+                  <label style={{ display: 'block', marginBottom: 14 }}>
+                    <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>Número de tarjeta</span>
+                    <div style={{ position: 'relative' }}>
+                      <input value={card.number} onChange={e => setCard(c => ({ ...c, number: fmt('number', e.target.value) }))} placeholder="1234 5678 9012 3456"
+                        style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: `1px solid ${errors.number ? '#f87171' : 'rgba(255,255,255,0.10)'}`, borderRadius: 10, padding: '11px 14px 11px 40px', color: '#fff', fontSize: 15, fontFamily: 'inherit', outline: 'none', letterSpacing: '0.04em', boxSizing: 'border-box' }} />
+                      <svg style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', opacity: 0.35 }} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    </div>
+                    {errors.number && <span style={{ fontSize: 11, color: '#f87171', marginTop: 4, display: 'block' }}>{errors.number}</span>}
+                  </label>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+                    <label>
+                      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>Vencimiento</span>
+                      <input value={card.expiry} onChange={e => setCard(c => ({ ...c, expiry: fmt('expiry', e.target.value) }))} placeholder="MM/AA"
+                        style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: `1px solid ${errors.expiry ? '#f87171' : 'rgba(255,255,255,0.10)'}`, borderRadius: 10, padding: '11px 14px', color: '#fff', fontSize: 14, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }} />
+                      {errors.expiry && <span style={{ fontSize: 11, color: '#f87171', marginTop: 4, display: 'block' }}>{errors.expiry}</span>}
+                    </label>
+                    <label>
+                      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>CVV</span>
+                      <input value={card.cvv} onChange={e => setCard(c => ({ ...c, cvv: fmt('cvv', e.target.value) }))} placeholder="123"
+                        style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: `1px solid ${errors.cvv ? '#f87171' : 'rgba(255,255,255,0.10)'}`, borderRadius: 10, padding: '11px 14px', color: '#fff', fontSize: 14, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }} />
+                      {errors.cvv && <span style={{ fontSize: 11, color: '#f87171', marginTop: 4, display: 'block' }}>{errors.cvv}</span>}
+                    </label>
+                  </div>
+
+                  <label style={{ display: 'block', marginBottom: 24 }}>
+                    <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>Nombre en la tarjeta</span>
+                    <input value={card.name} onChange={e => setCard(c => ({ ...c, name: e.target.value }))} placeholder="Juan García"
+                      style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: `1px solid ${errors.name ? '#f87171' : 'rgba(255,255,255,0.10)'}`, borderRadius: 10, padding: '11px 14px', color: '#fff', fontSize: 14, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }} />
+                    {errors.name && <span style={{ fontSize: 11, color: '#f87171', marginTop: 4, display: 'block' }}>{errors.name}</span>}
+                  </label>
+
+                  <motion.button type="submit" whileHover={{ background: '#10b981' }} whileTap={{ scale: 0.98 }}
+                    style={{ width: '100%', padding: '14px', background: '#34D399', border: 'none', borderRadius: 12, color: '#0d0e12', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+                    Pagar {plan?.price}{plan?.period} →
+                  </motion.button>
+
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.22)', textAlign: 'center', marginTop: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Pago 100% seguro. Podés cancelar cuando quieras.
+                  </p>
+                </form>
+              )
+            )}
+
+            {step === 'processing' && (
+              <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
+                  style={{ width: 44, height: 44, border: '2px solid rgba(52,211,153,0.15)', borderTopColor: '#34D399', borderRadius: '50%', margin: '0 auto 20px' }}
+                />
+                <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14 }}>Procesando pago…</p>
+              </div>
+            )}
+
+            {step === 'success' && (
+              <div style={{ textAlign: 'center', padding: '12px 0' }}>
+                <motion.div
+                  initial={{ scale: 0 }} animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 18, delay: 0.1 }}
+                  style={{ width: 60, height: 60, borderRadius: '50%', background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.30)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}
+                >
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round"><polyline points="4,12 9,17 20,6"/></svg>
+                </motion.div>
+                <h3 style={{ fontSize: 20, fontWeight: 400, letterSpacing: '-0.03em', color: '#fff', marginBottom: 8 }}>¡Listo!</h3>
+                <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, lineHeight: '1.6em', marginBottom: 24 }}>
+                  {isFree ? 'Tu cuenta gratuita está lista. Empezá a cargar tu biblioteca.' : `Plan ${plan?.name} activado. Te enviamos los datos de acceso por email.`}
+                </p>
+                <motion.button onClick={onClose} whileHover={{ background: 'rgba(52,211,153,0.15)' }}
+                  style={{ width: '100%', padding: '13px', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.22)', borderRadius: 12, color: '#34D399', fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  Ir a la app →
+                </motion.button>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
 // ── Landing ───────────────────────────────────────────────────────────────────
 export default function Landing() {
+  const [modal, setModal] = useState(null)
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', overflowX: 'hidden' }}>
+      {modal && <PaymentModal plan={modal} onClose={() => setModal(null)} />}
       <Navbar onCta={() => scrollTo('precios')} />
 
       {/* ═══════════════════════════ HERO ════════════════════════════════════ */}
@@ -561,8 +714,8 @@ export default function Landing() {
                   ))}
                 </div>
 
-                <motion.a
-                  href={WA} target="_blank" rel="noopener noreferrer"
+                <motion.button
+                  onClick={() => setModal(plan)}
                   whileHover={{ scale: 1.01, background: plan.accent ? '#10b981' : 'rgba(52,211,153,0.12)' }}
                   whileTap={{ scale: 0.97 }}
                   style={{
@@ -571,11 +724,11 @@ export default function Landing() {
                     border: plan.accent ? 'none' : '1px solid rgba(255,255,255,0.09)',
                     color: plan.accent ? '#0d0e12' : 'rgba(255,255,255,0.65)',
                     fontSize: 14, fontWeight: plan.accent ? 600 : 400,
-                    padding: '13px 0', borderRadius: 12, textDecoration: 'none', cursor: 'pointer',
+                    padding: '13px 0', borderRadius: 12, cursor: 'pointer', fontFamily: 'inherit', width: '100%',
                   }}
                 >
                   {plan.cta} →
-                </motion.a>
+                </motion.button>
               </motion.div>
             ))}
           </div>
@@ -610,14 +763,14 @@ export default function Landing() {
           <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.42)', marginBottom: 36, lineHeight: '1.65em' }}>
             Instalación en menos de un día. Soporte incluido en todos los planes.
           </p>
-          <motion.a
-            href={WA} target="_blank" rel="noopener noreferrer"
+          <motion.button
+            onClick={() => setModal(PLANS[1])}
             whileHover={{ background: '#10b981', scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#34D399', color: '#0d0e12', fontSize: 15, fontWeight: 600, padding: '15px 36px', borderRadius: 999, textDecoration: 'none' }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#34D399', color: '#0d0e12', fontSize: 15, fontWeight: 600, padding: '15px 36px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
           >
-            Hablar con un asesor →
-          </motion.a>
+            Empezar ahora →
+          </motion.button>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.22)', marginTop: 18 }}>Respondemos en menos de 24hs</p>
         </div>
       </motion.section>
