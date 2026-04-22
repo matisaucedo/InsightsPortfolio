@@ -20,7 +20,7 @@ export default function Logo({ size = 24, className = '' }) {
           fontWeight: 300,
           letterSpacing: '-0.05em',
           lineHeight: 1,
-          color: '#fff',
+          color: '#1a1a18',
         }}
       >
         Libra<span style={{ color: '#34D399' }}>Track</span>

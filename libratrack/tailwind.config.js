@@ -4,17 +4,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        emerald: {
+        acc: {
           DEFAULT: '#34D399',
-          dim: 'rgba(52,211,153,0.55)',
+          dark: '#10b981',
           subtle: 'rgba(52,211,153,0.10)',
-          border: 'rgba(52,211,153,0.15)',
+          border: 'rgba(52,211,153,0.25)',
         },
-        base: {
-          DEFAULT: '#050e0a',
-          card: '#0a1a10',
-          surface: '#071209',
-          line: 'rgba(255,255,255,0.06)',
+        ink: {
+          DEFAULT: '#1a1a18',
+          muted: '#6b6b68',
+          subtle: '#a0a09c',
+        },
+        stone: {
+          bg: '#f7f5f2',
+          surface: '#ffffff',
+          border: 'rgba(0,0,0,0.07)',
         },
       },
       fontFamily: {

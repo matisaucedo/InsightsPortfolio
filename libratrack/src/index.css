@@ -3,10 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --accent: #34D399;
-  --bg: #050e0a;
-  --card: #0a1a10;
-  --surface: #071209;
+  --bg:         #f7f5f2;
+  --bg-surface: #ffffff;
+  --txt:        #1a1a18;
+  --txt-muted:  #6b6b68;
+  --txt-subtle: #a0a09c;
+  --acc:        #34D399;
+  --acc-dark:   #10b981;
+  --border:     rgba(0,0,0,0.07);
+  --border-acc: rgba(52,211,153,0.25);
 }
 
 * {
@@ -15,7 +20,7 @@
 
 body {
   background: var(--bg);
-  color: #fff;
+  color: var(--txt);
   font-family: Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   margin: 0;
@@ -26,13 +31,15 @@ html {
 }
 
 @media (max-width: 640px) {
-  .bento-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .bento-main {
-    grid-row: auto !important;
-  }
   .features-grid {
     grid-template-columns: 1fr !important;
+  }
+  .journey-step {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  .stats-row {
+    flex-direction: column !important;
+    gap: 40px !important;
   }
 }

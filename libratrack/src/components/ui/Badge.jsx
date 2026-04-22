@@ -1,23 +1,23 @@
 const VARIANTS = {
   emerald: {
     bg: 'rgba(52,211,153,0.10)',
-    color: '#34D399',
-    border: 'rgba(52,211,153,0.20)',
+    color: '#10b981',
+    border: 'rgba(52,211,153,0.25)',
   },
   yellow: {
-    bg: 'rgba(251,191,36,0.10)',
-    color: '#fbbf24',
-    border: 'rgba(251,191,36,0.20)',
+    bg: 'rgba(217,119,6,0.08)',
+    color: '#b45309',
+    border: 'rgba(217,119,6,0.20)',
   },
   red: {
-    bg: 'rgba(248,113,113,0.10)',
-    color: '#f87171',
-    border: 'rgba(248,113,113,0.20)',
+    bg: 'rgba(220,38,38,0.07)',
+    color: '#dc2626',
+    border: 'rgba(220,38,38,0.18)',
   },
   muted: {
-    bg: 'rgba(255,255,255,0.05)',
-    color: 'rgba(255,255,255,0.35)',
-    border: 'rgba(255,255,255,0.08)',
+    bg: 'rgba(0,0,0,0.04)',
+    color: '#6b6b68',
+    border: 'rgba(0,0,0,0.08)',
   },
 }
 
@@ -33,8 +33,9 @@ export default function Badge({ children, variant = 'emerald' }) {
         padding: '3px 10px',
         borderRadius: 999,
         display: 'inline-block',
-        fontWeight: 400,
+        fontWeight: 500,
         lineHeight: 1.4,
+        letterSpacing: '0.01em',
       }}
     >
       {children}

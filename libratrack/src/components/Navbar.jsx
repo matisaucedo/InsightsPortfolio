@@ -21,10 +21,10 @@ export default function Navbar() {
         justifyContent: 'space-between',
         padding: '0 clamp(20px, 5vw, 64px)',
         height: 60,
-        background: 'rgba(5,14,10,0.80)',
+        background: 'rgba(247,245,242,0.92)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
+        borderBottom: '1px solid rgba(0,0,0,0.07)',
       }}
     >
       <Link to="/" style={{ textDecoration: 'none' }}>
@@ -38,12 +38,12 @@ export default function Navbar() {
             href="#"
             style={{
               fontSize: 13,
-              color: 'rgba(255,255,255,0.45)',
+              color: '#a0a09c',
               textDecoration: 'none',
               transition: 'color 0.2s',
             }}
-            onMouseEnter={(e) => (e.target.style.color = 'rgba(255,255,255,0.85)')}
-            onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.45)')}
+            onMouseEnter={(e) => (e.target.style.color = '#1a1a18')}
+            onMouseLeave={(e) => (e.target.style.color = '#a0a09c')}
           >
             {link}
           </a>
@@ -51,7 +51,7 @@ export default function Navbar() {
 
         <motion.a
           href="#"
-          whileHover={{ background: 'rgba(52,211,153,0.20)', borderColor: 'rgba(52,211,153,0.50)' }}
+          whileHover={{ background: 'rgba(52,211,153,0.12)', borderColor: 'rgba(52,211,153,0.45)' }}
           transition={{ duration: 0.2 }}
           style={{
             display: 'inline-flex',
@@ -59,8 +59,8 @@ export default function Navbar() {
             gap: 6,
             fontSize: 12,
             fontWeight: 500,
-            color: '#34D399',
-            background: 'rgba(52,211,153,0.10)',
+            color: '#10b981',
+            background: 'rgba(52,211,153,0.07)',
             border: '1px solid rgba(52,211,153,0.25)',
             borderRadius: 999,
             padding: '6px 16px',

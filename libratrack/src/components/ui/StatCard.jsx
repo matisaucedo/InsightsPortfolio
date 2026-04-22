@@ -1,38 +1,34 @@
+// Althea-style oversized stat — no card box, just number + label
 export default function StatCard({ label, value, delta, accent = false }) {
   return (
-    <div
-      style={{
-        background: '#0a1a10',
-        border: '1px solid rgba(52,211,153,0.08)',
-        borderRadius: 12,
-        padding: '14px 16px',
-      }}
-    >
+    <div style={{ textAlign: 'center' }}>
       <div
         style={{
-          fontSize: 10,
-          textTransform: 'uppercase',
-          letterSpacing: '0.10em',
-          color: 'rgba(255,255,255,0.30)',
-          marginBottom: 6,
-        }}
-      >
-        {label}
-      </div>
-      <div
-        style={{
-          fontSize: 32,
-          fontWeight: 600,
-          letterSpacing: '-0.04em',
-          color: accent ? '#34D399' : '#fff',
+          fontSize: 64,
+          fontWeight: 300,
+          letterSpacing: '-0.05em',
           lineHeight: 1,
-          marginBottom: 4,
+          color: accent ? '#34D399' : '#1a1a18',
+          marginBottom: 10,
+          fontVariantNumeric: 'tabular-nums',
         }}
       >
         {value}
       </div>
+      <div
+        style={{
+          fontSize: 11,
+          textTransform: 'uppercase',
+          letterSpacing: '0.12em',
+          color: '#a0a09c',
+          fontWeight: 500,
+          marginBottom: delta ? 4 : 0,
+        }}
+      >
+        {label}
+      </div>
       {delta && (
-        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.30)' }}>
+        <div style={{ fontSize: 12, color: '#34D399', fontWeight: 400 }}>
           {delta}
         </div>
       )}
