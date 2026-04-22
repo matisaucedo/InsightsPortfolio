@@ -237,7 +237,7 @@ export const PROJECTS = [
     sub: "Gestión de biblioteca en tiempo real",
     desc: "Plataforma integral para bibliotecas que centraliza el catálogo digital, automatiza préstamos y devoluciones en tiempo real, y ofrece a los socios una app mobile para reservar, renovar y explorar el fondo documental.",
     tags: ["React + Node", "Real-time sync", "Multi-sede"],
-    img: "/assets/images/table_app.jpg",
+    img: "/assets/images/libratrack_cover.png",
     mockup: {
       device: "split",
       macSrc: "https://libratrack-lnb7.onrender.com/",
@@ -255,6 +255,7 @@ export const PROJECTS = [
   },
   {
     id: "clubpro",
+    hidden: true,
     niche: "health",
     nl: "Deporte · SaaS Interno",
     title: "ClubOS",
@@ -279,6 +280,7 @@ export const PROJECTS = [
   },
   {
     id: "construmax",
+    hidden: true,
     niche: "const",
     nl: "Construcción · Portfolio Web",
     title: "Vértice Construcciones",

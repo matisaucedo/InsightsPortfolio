@@ -620,6 +620,7 @@ export function ProyectosScreen() {
   const dropRef = useRef(null);
 
   const filtered = (activeFilter === "all" ? PROJECTS : PROJECTS.filter(p => p.niche === activeFilter))
+    .filter(p => !p.hidden)
     .slice()
     .sort((a, b) => (a.locked ? 1 : 0) - (b.locked ? 1 : 0));
   const activeLabel = NICHES.find(n => n.key === activeFilter)?.label || "Todos";

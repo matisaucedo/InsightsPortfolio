@@ -55,11 +55,10 @@ function App() {
       <Nav />
       <AnimatePresence mode="wait">
         <motion.div
-          key={location.pathname}
-          variants={screenVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
+          key={location.key}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } }}
+          exit={{ opacity: 0, y: -12, transition: { duration: 0.22, ease: "easeIn" } }}
           style={{ minHeight: "100vh" }}
         >
           <Routes location={location}>
