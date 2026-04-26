@@ -3,59 +3,94 @@ import { motion } from "framer-motion";
 import Section from "../components/ui/Section.jsx";
 import Container from "../components/ui/Container.jsx";
 import SectionLabel from "../components/ui/SectionLabel.jsx";
+import TestimonialWall from "../components/ui/TestimonialWall.jsx";
 
 /*
- * Success Cases — Minta: "Early Access Voices / People who stepped in first."
- * 3 testimonial cards. Dark bg, no heavy borders.
- * Card layout: quote text, then author row at bottom.
- * Hover: subtle lift (y -4px) + slight border brighten.
+ * Success Cases — animated wall of testimonials
+ * (adapted from Framer Marketplace "Testimonial Animated").
  */
 
-const TESTIMONIALS = [
+/*
+ * Testimonios canónicos. Imágenes desde randomuser.me (deterministas):
+ *   men/{N}.jpg   → fotos de hombres (N = 0..99)
+ *   women/{N}.jpg → fotos de mujeres (N = 0..99)
+ * Cada testimonio usa un índice único para evitar duplicados.
+ * Importado también en HomePage.jsx (NosotrosScreen) para mantener
+ * la misma fuente de verdad en Inicio y Nosotros.
+ */
+export const ALL_TESTIMONIALS = [
   {
     quote:
       "Nos entregaron el dashboard en 3 semanas. Ahora vemos en 2 minutos lo que antes tardábamos un día en consolidar.",
     name: "Martín R.",
     role: "Director de Operaciones",
-    company: "Fintech · Buenos Aires",
-    initials: "MR",
+    company: "Fintech · BA",
+    image: "https://randomuser.me/api/portraits/men/32.jpg",
   },
   {
     quote:
       "Nunca pensé que automatizar nuestro flujo de pedidos fuera tan simple. El equipo de Insights lo hizo parecer obvio.",
     name: "Carolina S.",
     role: "CEO & Co-fundadora",
-    company: "E-commerce · Córdoba",
-    initials: "CS",
+    company: "E-commerce · CBA",
+    image: "https://randomuser.me/api/portraits/women/44.jpg",
   },
   {
     quote:
       "El sistema de turnos que construyeron redujo nuestros no-shows un 40%. La IA de recordatorios es un antes y un después.",
     name: "Diego M.",
     role: "Dueño",
-    company: "Salud · Mendoza",
-    initials: "DM",
+    company: "Salud · MZA",
+    image: "https://randomuser.me/api/portraits/men/15.jpg",
+  },
+  {
+    quote:
+      "En 3 semanas teníamos el MVP funcionando. No podía creer la velocidad sin sacrificar calidad.",
+    name: "Martín G.",
+    role: "Founder",
+    company: "SaaS · BA",
+    image: "https://randomuser.me/api/portraits/men/22.jpg",
+  },
+  {
+    quote:
+      "Nuestra app de logística maneja 800 envíos diarios sin un solo bug desde el lanzamiento.",
+    name: "Ana V.",
+    role: "Directora de Logística",
+    company: "Operaciones · MZA",
+    image: "https://randomuser.me/api/portraits/women/68.jpg",
+  },
+  {
+    quote:
+      "Probé con otras agencias antes. Insights es otra liga — entienden el negocio, no solo el código.",
+    name: "Diego F.",
+    role: "Gerente Comercial",
+    company: "Retail · ROS",
+    image: "https://randomuser.me/api/portraits/men/41.jpg",
+  },
+  {
+    quote:
+      "El dashboard de métricas que hicieron es lo primero que miro cada mañana. Cambió cómo tomamos decisiones.",
+    name: "Sofía L.",
+    role: "Head of Growth",
+    company: "Digital · MVD",
+    image: "https://randomuser.me/api/portraits/women/53.jpg",
+  },
+  {
+    quote:
+      "Me dieron exactamente lo que necesitaba, ni más ni menos. Respetan el presupuesto y los plazos.",
+    name: "Carlos M.",
+    role: "Gerente General",
+    company: "PyME · CABA",
+    image: "https://randomuser.me/api/portraits/men/8.jpg",
   },
 ];
 
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.13 } },
-};
-
-const card = {
-  hidden: { opacity: 0, y: 36 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: "easeOut" } },
-};
-
 export default function SuccessCases() {
   return (
-    <Section id="nosotros">
+    <Section id="success-cases">
       <Container>
-        {/* Header — centered */}
-        <div className="mb-16 md:mb-20">
+        <div style={{ marginBottom: 56 }}>
           <SectionLabel>Lo que dicen nuestros clientes</SectionLabel>
-
           <motion.h2
             style={{
               fontFamily: "var(--font-display)",
@@ -74,105 +109,10 @@ export default function SuccessCases() {
             Los que entraron primero.
           </motion.h2>
         </div>
-
-        {/* Cards grid */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-5"
-          variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {TESTIMONIALS.map((t) => (
-            <motion.div
-              key={t.name}
-              variants={card}
-              style={{
-                borderRadius: 20,
-                background: "#0d0d0d",
-                border: "1px solid rgba(255,255,255,0.08)",
-                padding: "32px 28px 28px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                minHeight: 240,
-              }}
-              whileHover={{
-                y: -4,
-                borderColor: "rgba(255,255,255,0.16)",
-                boxShadow: "0 0 0 1px rgba(255,255,255,0.10)",
-                transition: { duration: 0.25, ease: "easeOut" },
-              }}
-            >
-              {/* Quote */}
-              <p
-                style={{
-                  fontSize: 16,
-                  color: "rgba(255,255,255,0.72)",
-                  lineHeight: "1.6em",
-                  letterSpacing: "-0.01em",
-                  flex: 1,
-                  marginBottom: 32,
-                }}
-              >
-                <span style={{
-                fontFamily: "Georgia, serif",
-                fontSize: 28,
-                lineHeight: "0.6em",
-                verticalAlign: "-0.18em",
-                marginRight: 4,
-                color: "rgba(250,128,57,0.55)",
-                display: "inline-block",
-              }}>"</span>{t.quote}"
-              </p>
-
-              {/* Author row */}
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                {/* Avatar */}
-                <div
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: "50%",
-                    background: "rgba(232,93,47,0.16)",
-                    color: "rgba(232,93,47,0.85)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    flexShrink: 0,
-                    letterSpacing: "0.02em",
-                  }}
-                >
-                  {t.initials}
-                </div>
-                <div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: "#fff",
-                      letterSpacing: "-0.01em",
-                    }}
-                  >
-                    {t.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: "#8a8a8a",
-                      marginTop: 1,
-                    }}
-                  >
-                    {t.role} · {t.company}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
       </Container>
+
+      {/* Full-width wall — outside Container */}
+      <TestimonialWall testimonials={ALL_TESTIMONIALS} rowSpeeds={[44, 38]} fadeColor="#000" />
     </Section>
   );
 }

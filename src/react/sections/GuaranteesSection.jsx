@@ -181,8 +181,12 @@ export default function GuaranteesSection() {
         @media (max-width: 809px) {
           .guarantees-trust-bar {
             flex-direction: column !important;
-            gap: 32px !important;
-            max-width: 100% !important;
+            gap: 28px !important;
+            max-width: 420px !important;
+            text-align: center;
+          }
+          .guarantees-trust-bar > * > div > div:first-child {
+            justify-content: center;
           }
         }
       `}</style>

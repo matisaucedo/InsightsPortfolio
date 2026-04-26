@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   motion,
   useScroll,
@@ -36,19 +36,29 @@ const STEPS = [
   },
 ];
 
-/* Positions on the SVG S-curve — calibrated to viewBox 797×591
-   Alternating 38%/62% ensures cards (maxWidth 240px) never overflow:
-   - left 38% + card-right: extends to ~77%  ✓
-   - left 62% + card-left:  starts at ~22%   ✓  */
-const STEP_POSITIONS = [
-  { top: "6%",  left: "38%" },
-  { top: "37%", left: "62%" },
-  { top: "66%", left: "38%" },
-  { top: "91%", left: "62%" },
+/* SVG path — single source of truth, used both for rendering and for
+   computing orb positions / activation thresholds via getPointAtLength. */
+const ROADMAP_PATH = "M 303 35 C 540 70, 560 195, 494 219 C 428 243, 200 360, 303 390 C 406 420, 540 505, 494 538";
+
+/* Orb anchor points on the path (viewBox 797×591). These correspond to the
+   start of segment 1, end of seg 1, end of seg 2, end of seg 3 — exact
+   endpoints, so getPointAtLength matches them deterministically. */
+const ORB_POINTS = [
+  { x: 303, y: 35 },
+  { x: 494, y: 219 },
+  { x: 303, y: 390 },
+  { x: 494, y: 538 },
 ];
 
-const PATH_LENGTH = 1300;
-const THRESHOLDS = [0.15, 0.4, 0.65, 0.9];
+/* Positions for absolute card layout, expressed as % of viewBox dimensions. */
+const STEP_POSITIONS = ORB_POINTS.map((p) => ({
+  top: `${(p.y / 591) * 100}%`,
+  left: `${(p.x / 797) * 100}%`,
+}));
+
+/* Fallback thresholds — overridden at mount with measured arc-length
+   fractions. Defaults assume roughly equal thirds. */
+const FALLBACK_THRESHOLDS = [0, 0.34, 0.67, 1];
 
 /* ── Metallic Orb ──────────────────────────────────────────────────── */
 function OrbPin({ isActive }) {
@@ -121,34 +131,8 @@ function StepCard({ step, isActive }) {
         opacity: isActive ? 1 : 0.3,
         transition: "opacity 0.5s ease",
         width: 300,
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "flex-start",
-        gap: 12,
       }}
     >
-      {/* Pill — left column */}
-      <div
-        style={{
-          flexShrink: 0,
-          display: "inline-flex",
-          alignItems: "center",
-          background: "rgba(250,128,57,0.1)",
-          border: "1px solid rgba(250,128,57,0.22)",
-          borderRadius: 999,
-          fontSize: 9,
-          fontWeight: 700,
-          letterSpacing: "0.1em",
-          color: "#fa8039",
-          padding: "3px 10px",
-          textTransform: "uppercase",
-          marginTop: 2,
-        }}
-      >
-        Paso {step.num}
-      </div>
-
-      {/* Content — right column */}
       <div>
         <div
           style={{
@@ -177,11 +161,54 @@ function StepCard({ step, isActive }) {
 }
 
 /* ── Desktop layout ────────────────────────────────────────────────── */
-function DesktopRoadmap({ scrollYProgress, activeSteps }) {
+function DesktopRoadmap({ scrollYProgress }) {
+  const pathRef = useRef(null);
+  const [pathLength, setPathLength] = useState(1300);
+  const thresholdsRef = useRef(FALLBACK_THRESHOLDS);
+  const [activeSteps, setActiveSteps] = useState([false, false, false, false]);
+
+  useEffect(() => {
+    if (!pathRef.current) return;
+    const total = pathRef.current.getTotalLength();
+    setPathLength(total);
+
+    /* For each orb point, sample the path and find the arc-length at which
+       the path passes closest to it. That fraction is the exact scroll
+       progress at which the animated line reaches that orb. */
+    const SAMPLES = 600;
+    const thresholds = ORB_POINTS.map((orb) => {
+      let bestLen = 0;
+      let bestDist = Infinity;
+      for (let i = 0; i <= SAMPLES; i++) {
+        const len = (i / SAMPLES) * total;
+        const pt = pathRef.current.getPointAtLength(len);
+        const dx = pt.x - orb.x;
+        const dy = pt.y - orb.y;
+        const d = dx * dx + dy * dy;
+        if (d < bestDist) {
+          bestDist = d;
+          bestLen = len;
+        }
+      }
+      return bestLen / total;
+    });
+    thresholdsRef.current = thresholds;
+    const v = scrollYProgress.get();
+    setActiveSteps(thresholds.map((t) => v >= t));
+  }, [scrollYProgress]);
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    setActiveSteps((prev) => {
+      const next = thresholdsRef.current.map((t) => v >= t);
+      const changed = next.some((val, i) => val !== prev[i]);
+      return changed ? next : prev;
+    });
+  });
+
   const strokeDashoffset = useTransform(
     scrollYProgress,
     [0, 1],
-    [PATH_LENGTH, 0]
+    [pathLength, 0]
   );
 
   return (
@@ -205,7 +232,7 @@ function DesktopRoadmap({ scrollYProgress, activeSteps }) {
       >
         {/* Static dim rail */}
         <path
-          d="M 303 35 C 540 70, 560 195, 494 219 C 428 243, 200 360, 303 390 C 406 420, 540 505, 494 538"
+          d={ROADMAP_PATH}
           stroke="rgba(255,255,255,0.07)"
           strokeWidth="1"
           fill="none"
@@ -219,15 +246,14 @@ function DesktopRoadmap({ scrollYProgress, activeSteps }) {
           }}
         >
           <motion.path
-            d="M 303 35 C 540 70, 560 195, 494 219 C 428 243, 200 360, 303 390 C 406 420, 540 505, 494 538"
+            ref={pathRef}
+            d={ROADMAP_PATH}
             stroke="#fa8039"
             strokeWidth="1.5"
             fill="none"
             strokeLinecap="round"
-            style={{
-              strokeDasharray: PATH_LENGTH,
-              strokeDashoffset,
-            }}
+            strokeDasharray={pathLength}
+            style={{ strokeDashoffset }}
           />
         </g>
       </svg>
@@ -289,11 +315,46 @@ function DesktopRoadmap({ scrollYProgress, activeSteps }) {
 }
 
 /* ── Mobile layout ─────────────────────────────────────────────────── */
-function MobileRoadmap({ scrollYProgress, activeSteps }) {
+function MobileRoadmap({ scrollYProgress }) {
+  const containerRef = useRef(null);
+  const orbRefs = useRef([]);
+  const thresholdsRef = useRef(FALLBACK_THRESHOLDS);
+  const [activeSteps, setActiveSteps] = useState([false, false, false, false]);
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const measure = () => {
+      const cRect = container.getBoundingClientRect();
+      if (cRect.height === 0) return;
+      const thresholds = orbRefs.current.map((el) => {
+        if (!el) return 0;
+        const r = el.getBoundingClientRect();
+        const orbCenter = r.top + r.height / 2 - cRect.top;
+        return Math.max(0, Math.min(1, orbCenter / cRect.height));
+      });
+      thresholdsRef.current = thresholds;
+      const v = scrollYProgress.get();
+      setActiveSteps(thresholds.map((t) => v >= t));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [scrollYProgress]);
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    setActiveSteps((prev) => {
+      const next = thresholdsRef.current.map((t) => v >= t);
+      const changed = next.some((val, i) => val !== prev[i]);
+      return changed ? next : prev;
+    });
+  });
 
   return (
     <div
+      ref={containerRef}
       className="roadmap-mobile"
       style={{ position: "relative", paddingLeft: 44, display: "none" }}
     >
@@ -350,6 +411,7 @@ function MobileRoadmap({ scrollYProgress, activeSteps }) {
           >
             {/* Orb on the rail */}
             <div
+              ref={(el) => (orbRefs.current[i] = el)}
               style={{
                 position: "absolute",
                 left: -38,
@@ -383,19 +445,15 @@ function MobileRoadmap({ scrollYProgress, activeSteps }) {
 /* ── Root ──────────────────────────────────────────────────────────── */
 export default function RoadmapSection() {
   const containerRef = useRef(null);
-  const [activeSteps, setActiveSteps] = useState([false, false, false, false]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 85%", "end 15%"],
-  });
-
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setActiveSteps(prev => {
-      const next = THRESHOLDS.map((t) => v >= t);
-      const changed = next.some((val, i) => val !== prev[i]);
-      return changed ? next : prev;
-    });
+    /* progress 0 when the roadmap canvas top hits 85% of viewport (just entering),
+       progress 1 when the roadmap canvas bottom hits 90% of viewport (last orb
+       still well above the fold). This guarantees the line finishes drawing
+       — and the final card lights up — before the next section starts taking
+       over the screen. */
+    offset: ["start 85%", "end 90%"],
   });
 
   return (
@@ -476,8 +534,8 @@ export default function RoadmapSection() {
 
         {/* Roadmap canvas */}
         <div ref={containerRef}>
-          <DesktopRoadmap scrollYProgress={scrollYProgress} activeSteps={activeSteps} />
-          <MobileRoadmap  scrollYProgress={scrollYProgress} activeSteps={activeSteps} />
+          <DesktopRoadmap scrollYProgress={scrollYProgress} />
+          <MobileRoadmap  scrollYProgress={scrollYProgress} />
         </div>
       </Container>
     </Section>

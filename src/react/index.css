@@ -90,8 +90,8 @@
 
   /* Section padding — tighter Minta-style spacing */
   .section-py {
-    padding-top: 96px;
-    padding-bottom: 96px;
+    padding-top: 72px;
+    padding-bottom: 72px;
   }
 
   /* Container */
@@ -104,14 +104,14 @@
   }
 
   @media (max-width: 1199px) {
-    .section-py { padding-top: 80px; padding-bottom: 80px; }
+    .section-py { padding-top: 60px; padding-bottom: 60px; }
   }
   @media (max-width: 1024px) {
-    .section-py { padding-top: 72px; padding-bottom: 72px; }
+    .section-py { padding-top: 52px; padding-bottom: 52px; }
     .container-minta { padding-left: 20px; padding-right: 20px; }
   }
   @media (max-width: 768px) {
-    .section-py { padding-top: 56px; padding-bottom: 56px; }
+    .section-py { padding-top: 40px; padding-bottom: 40px; }
     .container-minta { padding-left: 16px; padding-right: 16px; }
     .footer-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
     .mobile-app-layout { flex-direction: column !important; gap: 32px !important; }
@@ -151,7 +151,7 @@
     }
   }
   @media (max-width: 480px) {
-    .section-py { padding-top: 48px; padding-bottom: 48px; }
+    .section-py { padding-top: 32px; padding-bottom: 32px; }
     .mobile-app-phone { height: 240px !important; }
   }
   @media (max-width: 360px) {

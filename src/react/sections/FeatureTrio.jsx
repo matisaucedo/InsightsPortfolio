@@ -1,53 +1,33 @@
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useRef } from "react";
 import Container from "../components/ui/Container.jsx";
 import Section from "../components/ui/Section.jsx";
 import SectionLabel from "../components/ui/SectionLabel.jsx";
-import IconItem from "../components/ui/IconItem.jsx";
-
-/*
- * Feature Trio — matches Minta "One app. Three superpowers."
- * Card anatomy: image area (aspect ~1.1) → IconItem (icon + title + desc)
- * Glass card: rgba(255,255,255,0.06) bg, border rgba(255,255,255,0.12),
- * inset top highlight, backdrop blur, 16px radius.
- * Stagger from y:64, opacity 0.
- */
+import featureAppsImg from "../../../assets/icons/feature-apps.webp";
+import featureIntegrationsImg from "../../../assets/icons/feature-integrations.webp";
+import featureAiImg from "../../../assets/icons/feature-ai.webp";
 
 const CARDS = [
   {
-    visualColor: "rgba(232,93,47,0.08)",
-    glowColor: "rgba(232,93,47,0.30)",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="14" rx="2"/>
-        <path d="M8 21h8M12 17v4"/>
-      </svg>
-    ),
+    img: featureAppsImg,
+    imgAlt: "Aplicaciones a medida",
     title: "Aplicaciones a medida",
     desc: "Construimos desde cero o mejoramos lo que ya tenés. Sin plantillas, sin límites — cada funcionalidad pensada para tu operación.",
+    objectPosition: "50% 30%",
   },
   {
-    visualColor: "rgba(255,255,255,0.03)",
-    glowColor: "rgba(250,128,57,0.10)",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M4 6h16M4 12h16M4 18h7"/>
-        <circle cx="17" cy="18" r="3"/>
-        <path d="M17 15v3l2 1"/>
-      </svg>
-    ),
+    img: featureIntegrationsImg,
+    imgAlt: "Integraciones sin fricción",
     title: "Integraciones sin fricción",
     desc: "Conectamos tu software con las herramientas que ya usás. APIs, ERPs, pagos — sin duplicar trabajo ni interrumpir tu flujo.",
+    objectPosition: "50% 50%",
   },
   {
-    visualColor: "rgba(232,93,47,0.05)",
-    glowColor: "rgba(232,93,47,0.24)",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-      </svg>
-    ),
+    img: featureAiImg,
+    imgAlt: "IA como ventaja competitiva",
     title: "IA como ventaja competitiva",
     desc: "Automatizamos decisiones repetitivas para que tu equipo se concentre en lo que importa. Cuanto más usás el sistema, más inteligente se vuelve.",
+    objectPosition: "50% 34%",
   },
 ];
 
@@ -56,69 +36,136 @@ const container = {
   visible: { transition: { staggerChildren: 0.16, delayChildren: 0.05 } },
 };
 
-const card = {
+const cardVariant = {
   hidden: { opacity: 0, y: 64 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: [0.22, 1, 0.36, 1] } },
 };
 
-/* Visual area — single merged radial gradient (glow center + color fade) */
-function CardVisual({ color, glow, index }) {
-  const yPos = index === 1 ? "60%" : "40%";
+const MAX_TILT = 10;
+const SPRING = { stiffness: 220, damping: 18, mass: 0.5 };
+
+function TiltCard({ data }) {
+  const ref = useRef(null);
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const rx = useSpring(useTransform(my, v => v * MAX_TILT), SPRING);
+  const ry = useSpring(useTransform(mx, v => v * MAX_TILT), SPRING);
+
+  const onMove = (e) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    mx.set(((e.clientX - r.left) / r.width - 0.5) * 2);
+    my.set(((e.clientY - r.top) / r.height - 0.5) * 2);
+  };
+  const onLeave = () => { mx.set(0); my.set(0); };
+
   return (
-    <div
+    <motion.article
+      ref={ref}
+      variants={cardVariant}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
       style={{
         position: "relative",
-        width: "100%",
-        aspectRatio: "1.15 / 1",
+        borderRadius: 16,
         overflow: "hidden",
-        background: "#080c0c",
-        borderBottom: "1px solid rgba(255,255,255,0.07)",
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.10)",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 0 rgba(255,255,255,0.08)",
+        display: "flex",
+        flexDirection: "column",
+        aspectRatio: "0.92 / 1",
+        minHeight: 380,
+        transformStyle: "preserve-3d",
+        perspective: 800,
+        rotateX: rx,
+        rotateY: ry,
+        willChange: "transform",
+        transition: "border-color 0.25s ease, box-shadow 0.25s ease",
+        cursor: "pointer",
+      }}
+      whileHover={{
+        borderColor: "rgba(255,255,255,0.18)",
+        boxShadow: "0 18px 48px rgba(0,0,0,0.45), 0 0 0 1px rgba(232,93,47,0.12), inset 0 1px 0 0 rgba(255,255,255,0.10)",
+        transition: { duration: 0.28, ease: "easeOut" },
       }}
     >
-      {/* Single merged gradient: glow center → color mid → transparent */}
       <div
         style={{
-          position: "absolute",
-          inset: 0,
-          background: `radial-gradient(ellipse 65% 60% at 50% ${yPos}, ${glow} 0%, ${color} 35%, transparent 80%)`,
-        }}
-      />
-
-      {/* Decorative grid lines */}
-      <svg
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.06 }}
-        preserveAspectRatio="none"
-        viewBox="0 0 100 100"
-      >
-        {[20, 40, 60, 80].map(x => (
-          <line key={x} x1={x} y1="0" x2={x} y2="100" stroke="white" strokeWidth="0.5"/>
-        ))}
-        {[20, 40, 60, 80].map(y => (
-          <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="white" strokeWidth="0.5"/>
-        ))}
-      </svg>
-
-      {/* Center icon ring */}
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 52,
-          height: 52,
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.05)",
-          border: "1px solid rgba(255,255,255,0.12)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "rgba(255,255,255,0.50)",
+          width: "100%",
+          flex: "0 0 65%",
+          overflow: "hidden",
+          background: "#0a0d0d",
+          position: "relative",
         }}
       >
-        {CARDS[index].icon}
+        <img
+          src={data.img}
+          alt={data.imgAlt}
+          loading="lazy"
+          draggable="false"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: data.objectPosition || "50% 50%",
+            display: "block",
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
+        />
+        {/* Subtle bottom fade so the title area blends in */}
+        <div
+          style={{
+            position: "absolute",
+            inset: "auto 0 0 0",
+            height: "40%",
+            background: "linear-gradient(180deg, rgba(8,12,12,0) 0%, rgba(8,12,12,0.55) 100%)",
+            pointerEvents: "none",
+          }}
+        />
       </div>
-    </div>
+
+      <div
+        style={{
+          flex: 1,
+          padding: "24px 26px 28px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+          background: "rgba(8,12,12,0.55)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <h3
+          style={{
+            fontSize: 20,
+            fontWeight: 500,
+            letterSpacing: "-0.02em",
+            lineHeight: 1.2,
+            color: "#fff",
+            margin: 0,
+            fontFamily: "var(--font-display)",
+          }}
+        >
+          {data.title}
+        </h3>
+        <p
+          style={{
+            fontSize: 14,
+            color: "#8a8a8a",
+            lineHeight: "1.6em",
+            letterSpacing: "-0.005em",
+            margin: 0,
+          }}
+        >
+          {data.desc}
+        </p>
+      </div>
+    </motion.article>
   );
 }
 
@@ -172,6 +219,7 @@ export default function FeatureTrio() {
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: 20,
+            perspective: 1200,
           }}
           className="feat-trio-grid"
           variants={container}
@@ -179,37 +227,11 @@ export default function FeatureTrio() {
           whileInView="visible"
           viewport={{ once: true, margin: "-48px" }}
         >
-          {CARDS.map((c, i) => (
-            <motion.div
-              key={c.title}
-              variants={card}
-              style={{
-                borderRadius: 16,
-                overflow: "hidden",
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.10)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
-                boxShadow: "inset 0px 1px 0px 0px rgba(255,255,255,0.10)",
-                display: "flex",
-                flexDirection: "column",
-              }}
-              whileHover={{
-                scale: 1.025,
-                y: -6,
-                borderColor: "rgba(255,255,255,0.18)",
-                transition: { duration: 0.28, ease: "easeOut" },
-              }}
-            >
-              <CardVisual color={c.visualColor} glow={c.glowColor} index={i} />
-              <div style={{ padding: "22px 24px 28px", flex: 1 }}>
-                <IconItem icon={c.icon} title={c.title} desc={c.desc} />
-              </div>
-            </motion.div>
+          {CARDS.map((c) => (
+            <TiltCard key={c.title} data={c} />
           ))}
         </motion.div>
       </Container>
-
     </Section>
   );
 }

@@ -120,8 +120,6 @@ export const PROJECTS = [
       device: "split",
       macSrc: "https://forza-gym.onrender.com/",
       iphoneSrc: "https://forza-gym.onrender.com/app",
-      macLabel: "Landing",
-      iphoneLabel: "App",
     },
     gallery: [
       { src: "/assets/images/forza_app.jpg", title: "Panel Principal", caption: "Control central del gimnasio" },
@@ -139,7 +137,7 @@ export const PROJECTS = [
     sub: "Landing + Dashboard",
     desc: "Plataforma de donaciones con globo 3D Three.js. Dashboard de métricas de captación de donantes.",
     tags: ["Three.js", "Donations", "Analytics"],
-    img: "/assets/images/donor_cover.jpg",
+    img: "/assets/images/donor_cover.webp",
     gallery: [
       { src: "/assets/images/donor_app.jpg", title: "Globo 3D", caption: "Mapa interactivo con Three.js" },
       { src: "/assets/images/donor_app.jpg", title: "Dashboard", caption: "Métricas de captación de donantes" },
@@ -202,8 +200,6 @@ export const PROJECTS = [
       device: "split",
       macSrc: "http://localhost:5174",
       iphoneSrc: "http://localhost:5174",
-      macLabel: "Página Web",
-      iphoneLabel: "App Móvil",
     },
   },
   {
@@ -219,8 +215,6 @@ export const PROJECTS = [
       device: "split",
       macSrc: "https://insights-keyboard-site.onrender.com",
       iphoneSrc: "https://insights-keyboard-site.onrender.com",
-      macLabel: "Landing",
-      iphoneLabel: "Mobile",
     },
     gallery: [
       { src: "/assets/images/kbsite_hero.png", title: "Hero 3D", caption: "KeyboardCanvas R3F con MeshPhysicalMaterial + glow naranja" },
@@ -241,8 +235,6 @@ export const PROJECTS = [
       device: "split",
       macSrc: "https://libratrack-lnb7.onrender.com/",
       iphoneSrc: "https://libratrack-lnb7.onrender.com/#/app",
-      macLabel: "Panel Bibliotecario",
-      iphoneLabel: "App Socios",
     },
     gallery: [
       { src: "/assets/images/table_app.jpg", title: "Gestión de préstamos", caption: "Vista admin con estado en vivo de cada préstamo activo, fecha de devolución y alertas de vencimiento." },
@@ -297,7 +289,7 @@ export const PROJECTS = [
     gallery: [
       { src: "/assets/images/kbsite_hero.png", title: "Hero de Marca", caption: "Pantalla de entrada con fondo inmersivo, claim principal y CTA directo a obra destacada." },
       { src: "/assets/images/salud_app.jpg", title: "Obras Residenciales", caption: "Grilla de proyectos con scroll reveal, filtros por tipología y lightbox de cada obra." },
-      { src: "/assets/images/donor_cover.jpg", title: "Obras Comerciales", caption: "Sección de edificios corporativos y locales comerciales con ficha técnica por proyecto." },
+      { src: "/assets/images/donor_cover.webp", title: "Obras Comerciales", caption: "Sección de edificios corporativos y locales comerciales con ficha técnica por proyecto." },
       { src: "/assets/images/table_app.jpg", title: "Tipologías y Procesos", caption: "Timeline visual del proceso constructivo y categorización por tipo de intervención." },
       { src: "/assets/images/clarity_cover.jpg", title: "Presupuesto Online", caption: "Formulario de contacto y solicitud de presupuesto con validación y diseño premium." },
     ],

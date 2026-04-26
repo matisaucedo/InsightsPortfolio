@@ -3,12 +3,13 @@ import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { useLocation, Link } from "react-router-dom";
 
 const MotionLink = motion.create(Link);
-import LogoSvg from "../../assets/icons/logo.svg?url";
+import LogoImg from "../../assets/icons/logo-new.svg?url";
 import StatsSection from "./sections/StatsSection.jsx";
 import FeatureTrio from "./sections/FeatureTrio.jsx";
 import AIFeaturesSection from "./sections/AIFeaturesSection.jsx";
 import RoadmapSection from "./sections/RoadmapSection.jsx";
-import SuccessCases from "./sections/SuccessCases.jsx";
+import SuccessCases, { ALL_TESTIMONIALS as SHARED_TESTIMONIALS } from "./sections/SuccessCases.jsx";
+import TestimonialWall from "./components/ui/TestimonialWall.jsx";
 import GuaranteesSection from "./sections/GuaranteesSection.jsx";
 import MobileApp from "./sections/MobileApp.jsx";
 import ScrollBackground from "./components/ui/ScrollBackground.jsx";
@@ -16,21 +17,14 @@ import PulsingOrb from "./components/ui/PulsingOrb.jsx";
 import { PROJECTS, NICHES, WHATSAPP_URL } from "./data/projects.js";
 
 const TEAM = [
-  { key: "fede", name: "Federico", role: "Co-Fundador · CEO", desc: "Lidera la visión del producto y el desarrollo. Experto en IA aplicada al software.", img: "/assets/images/team/federico.png" },
-  { key: "juan", name: "Juan", role: "Co-Fundador · Comercial", desc: "Gestiona relaciones con clientes y cierra acuerdos. Cara comercial de Insights.", img: "/assets/images/team/juan.png" },
-  { key: "matias", name: "Matías", role: "Visual · IA", desc: "Frontend development, edición de video y dirección visual. Potencia cada workflow creativo con IA.", img: "/assets/images/team/matias.png" },
-  { key: "toledo", name: "Valentín", role: "Desarrollo · IA", desc: "Programador e implementador de todos los productos. Especialista en automatización con IA.", img: "/assets/images/team/valentin.png" },
-  { key: "facu", name: "Nicolas", role: "Full Stack · Backend", desc: "Desarrollador full stack con foco en arquitectura escalable e integración de APIs.", img: "/assets/images/team/facu.png" },
+  { key: "fede", name: "Federico", role: "Co-Fundador · CEO", desc: "Lidera la visión del producto y el desarrollo. Experto en IA aplicada al software.", img: "/assets/images/team/federico.webp" },
+  { key: "juan", name: "Juan", role: "Co-Fundador · Comercial", desc: "Gestiona relaciones con clientes y cierra acuerdos. Cara comercial de Insights.", img: "/assets/images/team/juan.webp" },
+  { key: "matias", name: "Matías", role: "Visual · IA", desc: "Frontend development, edición de video y dirección visual. Potencia cada workflow creativo con IA.", img: "/assets/images/team/matias.webp" },
+  { key: "toledo", name: "Valentín", role: "Desarrollo · IA", desc: "Programador e implementador de todos los productos. Especialista en automatización con IA.", img: "/assets/images/team/valentin.webp" },
 ];
 
-const TESTIMONIALS = [
-  { q: "En 3 semanas teníamos el MVP listo. No podía creer la velocidad sin sacrificar calidad.", name: "Martín G.", loc: "Buenos Aires" },
-  { q: "El sistema de turnos que nos hicieron redujo un 40% las ausencias. Pagó solo en dos meses.", name: "Lucia R.", loc: "Córdoba" },
-  { q: "Probé con otras agencias antes. Insights es otra liga — entienden el negocio, no solo el código.", name: "Diego F.", loc: "Rosario" },
-  { q: "Nuestra app de logística maneja 800 envíos diarios sin un solo bug desde el lanzamiento.", name: "Ana V.", loc: "Mendoza" },
-  { q: "Me dieron exactamente lo que necesitaba, ni más ni menos. Respetan el presupuesto.", name: "Carlos M.", loc: "CABA" },
-  { q: "El dashboard de métricas que hicieron es lo primero que miro cada mañana.", name: "Sofía L.", loc: "Montevideo" },
-];
+/* Testimonios — fuente única en SuccessCases.jsx (Inicio + Nosotros usan los mismos) */
+const TESTIMONIALS = SHARED_TESTIMONIALS;
 
 const PROC_STEPS = [
   { num: "01", title: "Llamada inicial", desc: "Auditamos tu idea juntos. Definimos el alcance real, los tiempos y las prioridades antes de escribir una sola línea de código." },
@@ -110,7 +104,7 @@ export function Nav() {
       {/* Logo */}
       <Link to="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
         <img
-          src={LogoSvg}
+          src={LogoImg}
           alt="Insights Software"
           height={26}
           loading="eager"
@@ -270,7 +264,7 @@ export function Nav() {
               {/* Top row: logo + close */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 40 }}>
                 <Link to="/" onClick={() => setDrawerOpen(false)} style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-                  <img src={LogoSvg} alt="Insights" height={22} style={{ height: 22, width: "auto", opacity: 0.9 }} />
+                  <img src={LogoImg} alt="Insights" height={22} style={{ height: 22, width: "auto", opacity: 0.9 }} />
                 </Link>
                 <motion.button
                   onClick={() => setDrawerOpen(false)}
@@ -441,12 +435,13 @@ function Hero() {
       id="home"
       style={{
         position: "relative",
-        minHeight: "100vh",
+        minHeight: "88vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         paddingTop: "8vh",
+        paddingBottom: "4vh",
         overflow: "hidden",
         background: "#000",
       }}
@@ -713,7 +708,7 @@ export function ProyectosScreen() {
               <path d="M1 5h8M5 1l4 4-4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             <span style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.40)" }}>
-              +10 proyectos entregados
+              +53 proyectos entregados
             </span>
           </motion.div>
 
@@ -1640,9 +1635,9 @@ export function NosotrosScreen() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
           >
-            Cuatro personas.
+            4 personas.
             <br />
-            <em style={{ fontStyle: "italic", color: "rgba(255,255,255,0.55)" }}>Más de 10 proyectos.</em>
+            <em style={{ fontStyle: "italic", color: "rgba(255,255,255,0.55)" }}>+100 proyectos.</em>
           </motion.h1>
 
           <motion.p
@@ -1658,58 +1653,12 @@ export function NosotrosScreen() {
         {/* Team Spotlight */}
         <TeamSpotlight />
 
-        {/* Stats bar */}
-        <motion.div
-          className="nosotros-stats-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 1,
-            borderRadius: 16,
-            overflow: "hidden",
-            border: "1px solid rgba(255,255,255,0.07)",
-            marginBottom: 80,
-          }}
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.65, ease: "easeOut" }}
-        >
-          {[
-            { num: "+10", label: "Proyectos" },
-            { num: "+12",  label: "Sectores" },
-            { num: "4",    label: "Especialistas" },
-            { num: "+3",   label: "Años" },
-          ].map((s, i) => (
-            <div
-              key={s.label}
-              className="nosotros-stat-cell"
-              style={{
-                padding: "24px 12px",
-                background: "#0d0d0d",
-                textAlign: "center",
-                borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: '"Geist Mono", monospace',
-                  fontFeatureSettings: "'zero' on, 'tnum' on",
-                  fontSize: "clamp(20px, 5vw, 36px)",
-                  fontWeight: 300,
-                  letterSpacing: "-0.02em",
-                  color: "#fff",
-                  marginBottom: 6,
-                }}
-              >
-                {s.num}
-              </div>
-              <div style={{ fontSize: "clamp(11px, 2.5vw, 13px)", color: "#8a8a8a", lineHeight: "1.3em" }}>
-                {s.label}
-              </div>
-            </div>
-          ))}
-        </motion.div>
+        {/* Stats — mismo bloque que en Inicio (Resultados reales · contador animado).
+            Breakout: usa calc(50% - 50vw) para alcanzar el ancho completo del viewport
+            sin depender del padding actual del contenedor padre. */}
+        <div style={{ marginLeft: "calc(50% - 50vw)", marginRight: "calc(50% - 50vw)", marginBottom: 40 }}>
+          <StatsSection />
+        </div>
 
         {/* Speaker section */}
         <motion.div
@@ -1736,8 +1685,8 @@ export function NosotrosScreen() {
               }}
             >
               <img
-                src="/assets/images/speaker.jpg"
-                alt="Charla en Buenos Aires sobre IA"
+                src="/assets/images/no-usa-ia.webp"
+                alt="El que no use IA va a quedar atrás"
                 width={600}
                 height={450}
                 loading="lazy"
@@ -1808,9 +1757,9 @@ export function NosotrosScreen() {
           </div>
         </motion.div>
 
-        {/* Testimonials */}
-        <div style={{ marginBottom: 80 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 48 }}>
+        {/* Testimonials — animated wall (Framer-style). Viewport-width breakout. */}
+        <div style={{ marginBottom: 80, marginLeft: "calc(50% - 50vw)", marginRight: "calc(50% - 50vw)" }}>
+          <div className="container-minta" style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 48 }}>
             <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.07)" }} />
             <h2 style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 500, margin: 0 }}>
               Lo que dicen nuestros clientes
@@ -1818,59 +1767,7 @@ export function NosotrosScreen() {
             <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.07)" }} />
           </div>
 
-          <motion.div
-            className="nosotros-testimonials-grid"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))",
-              gap: 12,
-            }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
-            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
-          >
-            {TESTIMONIALS.map(t => (
-              <motion.div
-                key={t.name}
-                variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: "easeOut" } } }}
-                style={{
-                  borderRadius: 20,
-                  background: "#0d0d0d",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                  padding: "32px 28px 28px",
-                }}
-                whileHover={{ y: -4, borderColor: "rgba(255,255,255,0.13)", transition: { duration: 0.22 } }}
-              >
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.68)", lineHeight: "1.55em", marginBottom: 20 }}>
-                  &ldquo;{t.q}&rdquo;
-                </p>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: "50%",
-                      background: "rgba(232,93,47,0.14)",
-                      color: "rgba(232,93,47,0.80)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 10,
-                      fontWeight: 700,
-                      letterSpacing: "0.02em",
-                    }}
-                  >
-                    {t.name.split(" ").map(w => w[0]).join("")}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: "#fff", letterSpacing: "-0.01em" }}>{t.name}</div>
-                    <div style={{ fontSize: 12, color: "#8a8a8a" }}>{t.loc}</div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+          <TestimonialWall testimonials={TESTIMONIALS} rowSpeeds={[40, 34]} fadeColor="#000" />
         </div>
 
         {/* Closing CTA */}
@@ -2024,7 +1921,7 @@ function Footer() {
       >
         <p style={{ fontSize: 11.5, color: "#666", lineHeight: "1.65em", maxWidth: 900, marginBottom: 12 }}>
           Insights Software es una agencia líder en desarrollo de software a medida, aplicaciones móviles iOS y Android, y plataformas web escalables.
-          Especializados en React, Next.js, Node.js, Python e inteligencia artificial aplicada (OpenAI). Con más de 10 proyectos entregados y 100% de satisfacción, construimos
+          Especializados en React, Next.js, Node.js, Python e inteligencia artificial aplicada (OpenAI). Con +53 proyectos entregados y 100% de satisfacción, construimos
           soluciones a medida con IA como ventaja competitiva. Presentes en Argentina, Uruguay, Colombia, Chile y España.
         </p>
         <p style={{ fontSize: 11.5, color: "#555" }}>
