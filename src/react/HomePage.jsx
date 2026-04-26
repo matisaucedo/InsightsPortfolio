@@ -1637,7 +1637,7 @@ export function NosotrosScreen() {
           >
             4 personas.
             <br />
-            <em style={{ fontStyle: "italic", color: "rgba(255,255,255,0.55)" }}>+100 proyectos.</em>
+            <em style={{ fontStyle: "italic", color: "rgba(255,255,255,0.55)" }}>+50 proyectos.</em>
           </motion.h1>
 
           <motion.p
