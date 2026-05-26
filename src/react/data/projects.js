@@ -295,6 +295,22 @@ export const PROJECTS = [
     ],
   },
 
+  {
+    id: "epluxury",
+    niche: "tech",
+    nl: "Transporte Ejecutivo · SaaS",
+    title: "EP Luxury Transportation",
+    sub: "Reservas, Flota Viva y Bot de IA",
+    desc: "Plataforma de operaciones para servicio de transporte ejecutivo en Long Island City y todo el noreste. Reservas premium, estado de flota en tiempo real, bot de IA que filtra DMs entrantes y publicador automático multi-plataforma.",
+    tags: ["Reservas Premium", "Flota Viva", "Bot IA", "Multi-plataforma"],
+    img: "/assets/images/epluxury_cover.jpg",
+    mockup: {
+      device: "split",
+      macSrc: "https://ep-luxury-transportation.onrender.com/dashboard/",
+      iphoneSrc: "https://ep-luxury-transportation.onrender.com/dashboard/",
+    },
+  },
+
   // ── Proyectos bloqueados (próximamente) ──────────────────────────────────
 
   // CRM
